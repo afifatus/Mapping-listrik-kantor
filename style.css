@@ -1,0 +1,390 @@
+/* ========================================================
+   STYLE.CSS - PETA DISTRIBUSI LISTRIK KANTOR
+   Dibuat dengan CSS murni (Vanilla CSS) yang terstruktur dan
+   mudah dipahami oleh pemula.
+   ======================================================== */
+
+/* --- 1. VARIABEL WARNA & UKURAN (CSS Custom Properties) --- */
+:root {
+  /* Warna Latar Belakang & Panel */
+  --bg-main: #0f172a;          /* Biru gelap pekat untuk latar utama */
+  --bg-card: #1e293b;          /* Warna kartu/kontainer */
+  --bg-card-header: #334155;   /* Warna header kartu */
+  --border-color: #334155;     /* Garis batas kartu */
+
+  /* Warna Teks */
+  --text-main: #f8fafc;        /* Teks putih terang */
+  --text-muted: #94a3b8;       /* Teks abu-abu untuk deskripsi */
+  
+  /* Kategori Warna Kelistrikan (Sesuai Legenda) */
+  --color-source: #f59e0b;       /* Kuning Amber: Sumber Listrik (PLN, Genset) */
+  --color-panel: #3b82f6;        /* Biru: Panel Input & Output */
+  --color-protection: #ef4444;   /* Merah: Proteksi & Switch (ATS, MCCB) */
+  --color-distribution: #a855f7; /* Ungu: RST Pembagian */
+  --color-building: #14b8a6;     /* Teal / Hijau Kebiruan: Gedung */
+
+  /* Kabel Listrik */
+  --wire-color: #64748b;         /* Warna netral garis kabel */
+  --wire-highlight: #38bdf8;     /* Warna kabel ketika disorot */
+}
+
+/* --- 2. RESET DASAR & PENGATURAN FONT --- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* --- 3. HEADER HALAMAN --- */
+.header {
+  background-color: var(--bg-card);
+  border-bottom: 1px solid var(--border-color);
+  padding: 1.25rem 1.5rem;
+  text-align: center;
+}
+
+.header h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: 0.5px;
+}
+
+.header .subtitle {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+/* --- 4. TATA LETAK UTAMA (RESPONSIVE GRID / FLEX) --- */
+.main-container {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 340px; /* Diagram lebar di kiri, sidebar 340px di kanan */
+  gap: 1.5rem;
+  padding: 1.5rem;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* --- 5. KARTU & CONTAINER --- */
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+}
+
+.card-header {
+  background-color: rgba(51, 65, 85, 0.4);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.9rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-header h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.badge {
+  background-color: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  text-transform: uppercase;
+}
+
+/* --- 6. AREA DIAGRAM SVG --- */
+.svg-container {
+  padding: 1rem;
+  background-color: #0b1120;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+#electrical-diagram {
+  width: 100%;
+  height: auto;
+  max-height: 580px;
+  display: block;
+}
+
+/* Styling Garis Kabel Listrik (Wire) */
+.wire {
+  stroke: var(--wire-color);
+  stroke-width: 2.5;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.wire-bus {
+  stroke: var(--wire-color);
+  stroke-width: 3.5;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Styling Blok Komponen (Node SVG) */
+.node {
+  cursor: pointer;
+  transition: transform 0.15s ease, filter 0.15s ease;
+  outline: none;
+}
+
+.node rect {
+  stroke-width: 2;
+  transition: stroke-width 0.2s, stroke 0.2s, fill 0.2s;
+}
+
+.node-title {
+  fill: var(--text-main);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  text-anchor: middle;
+  pointer-events: none; /* Agar klik tetap tembus ke grup node */
+}
+
+.node-tag {
+  fill: var(--text-muted);
+  font-family: inherit;
+  font-size: 10px;
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+/* Kategori Tipe Node (Warna Blok SVG) */
+.node-source rect {
+  fill: rgba(245, 158, 11, 0.12);
+  stroke: var(--color-source);
+}
+
+.node-panel rect {
+  fill: rgba(59, 130, 246, 0.12);
+  stroke: var(--color-panel);
+}
+
+.node-protection rect {
+  fill: rgba(239, 68, 68, 0.12);
+  stroke: var(--color-protection);
+}
+
+.node-distribution rect {
+  fill: rgba(168, 85, 247, 0.12);
+  stroke: var(--color-distribution);
+}
+
+.node-building rect {
+  fill: rgba(20, 184, 166, 0.12);
+  stroke: var(--color-building);
+}
+
+/* Efek Hover (Saat Mouse Di Atas Komponen) */
+.node:hover {
+  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.5));
+}
+
+.node:hover rect {
+  stroke-width: 2.5;
+}
+
+/* Efek Active (Saat Komponen Sedang Terpilih) */
+.node.active rect {
+  stroke-width: 3.5;
+  stroke: #ffffff;
+  fill-opacity: 0.3;
+}
+
+/* --- 7. AREA LEGENDA --- */
+.legend-container {
+  padding: 1rem 1.25rem;
+  background-color: var(--bg-card);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+
+.legend-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.legend-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.legend-color {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.legend-label {
+  font-size: 0.85rem;
+  color: var(--text-main);
+}
+
+.color-source { background-color: var(--color-source); }
+.color-panel { background-color: var(--color-panel); }
+.color-protection { background-color: var(--color-protection); }
+.color-distribution { background-color: var(--color-distribution); }
+.color-building { background-color: var(--color-building); }
+
+/* --- 8. PANEL INFORMASI DETAIL (SIDEBAR) --- */
+.info-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-body {
+  padding: 1.25rem;
+  flex: 1;
+}
+
+/* Pesan Kosong / Default State */
+.info-empty-state {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: var(--text-muted);
+}
+
+.empty-icon {
+  font-size: 2.2rem;
+  margin-bottom: 0.75rem;
+  color: #38bdf8;
+}
+
+.info-empty-state p {
+  font-size: 0.9rem;
+}
+
+/* Wadah Data Detail */
+.info-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.info-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.info-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.info-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.info-badge {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background-color: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.info-desc-text {
+  font-size: 0.95rem;
+  color: #cbd5e1;
+  background-color: rgba(15, 23, 42, 0.6);
+  padding: 0.85rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  line-height: 1.6;
+}
+
+.card-footer {
+  padding: 0.85rem 1.25rem;
+  background-color: rgba(51, 65, 85, 0.2);
+  border-top: 1px solid var(--border-color);
+}
+
+.note-text {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* --- 9. FOOTER HALAMAN --- */
+.footer {
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border-color);
+  background-color: var(--bg-card);
+}
+
+/* --- 10. RESPONSIVE DESIGN (UNTUK LAYAR KECIL / HP) --- */
+@media (max-width: 950px) {
+  .main-container {
+    grid-template-columns: 1fr; /* Berubah menjadi 1 kolom vertikal */
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .header h1 {
+    font-size: 1.3rem;
+  }
+
+  .legend-container {
+    justify-content: center;
+  }
+
+  .info-body {
+    padding: 1rem;
+  }
+}

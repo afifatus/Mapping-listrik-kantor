@@ -37,27 +37,27 @@
         <div class="svg-container">
           <svg 
             id="electrical-diagram" 
-            viewBox="0 0 1000 680" 
+            viewBox="0 0 1000 880" 
             preserveAspectRatio="xMidYMid meet"
             xmlns="http://www.w3.org/2000/svg">
             
-            <!-- DEFINISI ELEMEN GRAFIS (Contoh: Kepala Panah) -->
+            <!-- DEFINISI ELEMEN GRAFIS (Kepala Panah & Filter) -->
             <defs>
-              <!-- Panah untuk penunjuk arah aliran listrik -->
+              <!-- Panah untuk penunjuk arah aliran listrik (Light Theme) -->
               <marker id="arrow" viewBox="0 0 10 10" refX="7" refY="5"
                 markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                <path d="M 0 1 L 10 5 L 0 9 z" fill="#94a3b8" />
+                <path d="M 0 1 L 10 5 L 0 9 z" fill="#64748b" />
               </marker>
 
               <!-- Panah saat garis aktif/terpilih -->
               <marker id="arrow-highlight" viewBox="0 0 10 10" refX="7" refY="5"
                 markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                <path d="M 0 1 L 10 5 L 0 9 z" fill="#38bdf8" />
+                <path d="M 0 1 L 10 5 L 0 9 z" fill="#2563eb" />
               </marker>
             </defs>
 
             <!-- ========================================================
-                 JALUR / GARIS KABEL KELISTRIKAN (LINES & PATHS)
+                 JALUR KABEL SISI HULU (PLN, GENSET, ATS MENUJU MDB-01)
                  ======================================================== -->
             <g class="power-lines" id="power-lines">
               <!-- Garis 1: PLN -> Panel Input ATS -->
@@ -69,46 +69,38 @@
               <!-- Garis 3: Genset -> ATS -->
               <path class="wire" d="M 680 90 L 680 215 L 540 215 L 540 240" marker-end="url(#arrow)" />
               
-              <!-- Garis 4: ATS -> Panel Output -->
-              <path class="wire" d="M 500 295 L 500 330" marker-end="url(#arrow)" />
-              
-              <!-- Garis 5: Panel Output -> MCCB Main Output -->
-              <path class="wire" d="M 500 380 L 500 420" marker-end="url(#arrow)" />
-              
-              <!-- Garis 6: MCCB Main Output -> RST Pembagian -->
-              <path class="wire" d="M 500 470 L 500 510" marker-end="url(#arrow)" />
+              <!-- Garis 4: ATS -> Masukan Pipa Kabel Incoming MDB-01 -->
+              <path class="wire" d="M 500 295 L 500 345" marker-end="url(#arrow)" />
 
-              <!-- Bus Pembagian (Kabel Distribusi Horizontal) -->
-              <path class="wire-bus" d="M 500 560 L 500 580 M 160 580 L 840 580" />
-
-              <!-- Cabang ke Gedung-Gedung -->
-              <!-- RST -> Gedung A -->
-              <path class="wire" d="M 160 580 L 160 600" marker-end="url(#arrow)" />
-              <!-- RST -> Gedung B -->
-              <path class="wire" d="M 390 580 L 390 600" marker-end="url(#arrow)" />
-              <!-- RST -> Gedung C -->
-              <path class="wire" d="M 610 580 L 610 600" marker-end="url(#arrow)" />
-              <!-- RST -> Gedung D -->
-              <path class="wire" d="M 840 580 L 840 600" marker-end="url(#arrow)" />
+              <!-- 5 Jalur Kabel Outgoing dari Bawah Kabinet MDB-01 Menuju 5 Feeder -->
+              <!-- Outgoing Feeder 1 -->
+              <path class="wire" d="M 200 755 L 200 800" marker-end="url(#arrow)" />
+              <!-- Outgoing Feeder 2 -->
+              <path class="wire" d="M 350 755 L 350 800" marker-end="url(#arrow)" />
+              <!-- Outgoing Feeder 3 -->
+              <path class="wire" d="M 500 755 L 500 800" marker-end="url(#arrow)" />
+              <!-- Outgoing Feeder 4 -->
+              <path class="wire" d="M 650 755 L 650 800" marker-end="url(#arrow)" />
+              <!-- Outgoing Feeder 5 -->
+              <path class="wire" d="M 800 755 L 800 800" marker-end="url(#arrow)" />
             </g>
 
             <!-- ========================================================
-                 BLOK KOMPONEN KELISTRIKAN (KLIK UNTUK MELIHAT INFO)
+                 BLOK KOMPONEN SISTEM HULU (PLN, GENSET, ATS)
                  ======================================================== -->
-            <g class="components" id="components-group">
-              
+            <g class="components-upstream" id="upstream-group">
               <!-- 1. PLN (Sumber Utama) -->
               <g class="node node-source" data-id="pln" tabindex="0" role="button" aria-label="Komponen PLN">
                 <rect x="240" y="40" width="160" height="50" rx="8" />
                 <text x="320" y="66" class="node-title">PLN</text>
-                <text x="320" y="80" class="node-tag">Sumber Utama</text>
+                <text x="320" y="80" class="node-tag">Sumber Utama (Utility)</text>
               </g>
 
               <!-- 2. GENSET (Sumber Cadangan) -->
               <g class="node node-source" data-id="genset" tabindex="0" role="button" aria-label="Komponen Genset">
                 <rect x="600" y="40" width="160" height="50" rx="8" />
                 <text x="680" y="66" class="node-title">Genset</text>
-                <text x="680" y="80" class="node-tag">Sumber Cadangan</text>
+                <text x="680" y="80" class="node-tag">Sumber Cadangan (Backup)</text>
               </g>
 
               <!-- 3. PANEL INPUT ATS -->
@@ -124,54 +116,348 @@
                 <text x="500" y="267" class="node-title">ATS</text>
                 <text x="500" y="283" class="node-tag">Automatic Transfer Switch</text>
               </g>
+            </g>
 
-              <!-- 5. PANEL OUTPUT -->
-              <g class="node node-panel" data-id="panel-output" tabindex="0" role="button" aria-label="Komponen Panel Output">
-                <rect x="410" y="330" width="180" height="50" rx="8" />
-                <text x="500" y="356" class="node-title">Panel Output</text>
-                <text x="500" y="370" class="node-tag">Panel Distribusi Utama</text>
+            <!-- ========================================================
+                 REPRESENTASI FISIK KABINET MDB-01 (TAMPAK DEPAN NYATA)
+                 ======================================================== -->
+            <g class="mdb-physical-panel" id="mdb-panel-group">
+              
+              <!-- 1. Enclosure / Rangka Kabinet Panel Luar (Baja Industri) -->
+              <rect x="115" y="345" width="770" height="410" rx="10" class="mdb-cabinet-outer" />
+              
+              <!-- Pelat Dudukan Dalam (Internal Mounting Plate) -->
+              <rect x="127" y="380" width="746" height="365" rx="6" class="mdb-cabinet-inner" />
+
+              <!-- Engsel & Baut Kabinet Panel -->
+              <rect x="115" y="390" width="7" height="28" rx="2" class="mdb-panel-hinge" />
+              <rect x="115" y="670" width="7" height="28" rx="2" class="mdb-panel-hinge" />
+              <circle cx="135" cy="392" r="3" class="mdb-bolt" />
+              <circle cx="865" cy="392" r="3" class="mdb-bolt" />
+              <circle cx="135" cy="735" r="3" class="mdb-bolt" />
+              <circle cx="865" cy="735" r="3" class="mdb-bolt" />
+
+              <!-- Cable Glands Masuk di Sisi Atas Kabinet (3 Fasa Incoming) -->
+              <rect x="445" y="338" width="20" height="9" rx="2" class="cable-gland" />
+              <rect x="490" y="338" width="20" height="9" rx="2" class="cable-gland" />
+              <rect x="535" y="338" width="20" height="9" rx="2" class="cable-gland" />
+
+              <!-- Cable Glands Keluar di Sisi Bawah Kabinet (5 Feeder Outgoing) -->
+              <rect x="190" y="753" width="20" height="8" rx="2" class="cable-gland" />
+              <rect x="340" y="753" width="20" height="8" rx="2" class="cable-gland" />
+              <rect x="490" y="753" width="20" height="8" rx="2" class="cable-gland" />
+              <rect x="640" y="753" width="20" height="8" rx="2" class="cable-gland" />
+              <rect x="790" y="753" width="20" height="8" rx="2" class="cable-gland" />
+
+              <!-- Header / Pelat Nama Kabinet MDB-01 (Bisa Diklik untuk Buka Info MDB-01) -->
+              <g class="node node-panel" data-id="mdb-01" tabindex="0" role="button" aria-label="Panel MDB-01 Main Distribution Board">
+                <rect x="250" y="350" width="500" height="26" rx="5" class="mdb-nameplate-bg comp-body" />
+                <circle cx="270" cy="363" r="4.5" class="mdb-led-active" />
+                <text x="490" y="367" class="mdb-nameplate-title" text-anchor="middle">MDB-01 (MAIN DISTRIBUTION BOARD) - 3 PHASE 380V/220V</text>
+                <text x="730" y="367" class="mdb-nameplate-sub" text-anchor="middle">&#9679; AKTIF</text>
               </g>
 
-              <!-- 6. MCCB MAIN OUTPUT -->
-              <g class="node node-protection" data-id="mccb-main" tabindex="0" role="button" aria-label="Komponen MCCB Main Output">
-                <rect x="410" y="420" width="180" height="50" rx="8" />
-                <text x="500" y="446" class="node-title">MCCB Main Output</text>
-                <text x="500" y="460" class="node-tag">Proteksi Beban Lebih</text>
+              <!-- Stiker Bahaya Tegangan Listrik (Industrial Safety Badge) -->
+              <rect x="135" y="353" width="105" height="20" rx="3" class="mdb-danger-badge" />
+              <text x="187" y="367" class="mdb-danger-text">&#9889; TEGANGAN 380V</text>
+
+              <!-- ====================================================
+                   BAGIAN ATAS MDB: KABEL INCOMING, MCCB UTAMA & MCB AUX
+                   ==================================================== -->
+
+              <!-- Jalur Kabel Incoming 3 Fasa Masuk ke Terminal Atas MCCB -->
+              <!-- Fasa R (Merah) -->
+              <line x1="455" y1="345" x2="455" y2="395" class="conductor-r" />
+              <!-- Fasa S (Kuning/Amber) -->
+              <line x1="500" y1="345" x2="500" y2="395" class="conductor-s" />
+              <!-- Fasa T (Hitam/Dark Slate) -->
+              <line x1="545" y1="345" x2="545" y2="395" class="conductor-t" />
+
+              <!-- Kabel Tap Kontrol Menuju MCB Auxiliary -->
+              <path d="M 545 372 L 675 372 L 675 398" class="conductor-aux" />
+
+              <!-- DIN Rail Penyangga Komponen MCB Auxiliary -->
+              <rect x="625" y="425" width="100" height="18" rx="2" class="mcb-din-rail" />
+              <line x1="635" y1="434" x2="715" y2="434" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4 3" />
+
+              <!-- 5. MCCB UTAMA (Pusat Bagian Atas Panel) -->
+              <g class="node node-protection" data-id="mccb-main" tabindex="0" role="button" aria-label="Komponen MCCB Utama">
+                <!-- Casing MCCB Utama Industri -->
+                <rect x="420" y="395" width="160" height="92" rx="6" class="mccb-case comp-body" />
+                
+                <!-- Terminal Atas (Incoming Lugs) -->
+                <rect x="445" y="390" width="20" height="9" rx="2" class="mccb-terminal" />
+                <rect x="490" y="390" width="20" height="9" rx="2" class="mccb-terminal" />
+                <rect x="535" y="390" width="20" height="9" rx="2" class="mccb-terminal" />
+                
+                <!-- Sekat Isolasi Antar Fasa (Phase Barriers) -->
+                <line x1="472" y1="390" x2="472" y2="415" class="mccb-barrier" />
+                <line x1="527" y1="390" x2="527" y2="415" class="mccb-barrier" />
+
+                <!-- Pelat Spesifikasi MCCB -->
+                <rect x="432" y="415" width="136" height="42" rx="4" class="mccb-plate" />
+                <text x="500" y="433" class="mccb-title">MCCB UTAMA</text>
+                <text x="500" y="448" class="mccb-sub">Proteksi Utama MDB (3P)</text>
+
+                <!-- Tuas Switch Toggle Mekanis (Posisi ON / Merah) -->
+                <rect x="488" y="462" width="24" height="15" rx="3" class="mccb-toggle-handle" />
+                <text x="500" y="473" class="mccb-toggle-label">I / ON</text>
+
+                <!-- Tombol Uji Trip (Push to Trip) -->
+                <circle cx="445" cy="469" r="4.5" class="mccb-trip-btn" />
+                <text x="445" y="464" fill="#94a3b8" font-size="6" text-anchor="middle">TRIP</text>
+
+                <!-- Terminal Bawah (Outgoing ke Busbar) -->
+                <rect x="445" y="483" width="20" height="8" rx="2" class="mccb-terminal" />
+                <rect x="490" y="483" width="20" height="8" rx="2" class="mccb-terminal" />
+                <rect x="535" y="483" width="20" height="8" rx="2" class="mccb-terminal" />
               </g>
 
-              <!-- 7. RST PEMBAGIAN -->
-              <g class="node node-distribution" data-id="rst-pembagian" tabindex="0" role="button" aria-label="Komponen RST Pembagian">
-                <rect x="400" y="510" width="200" height="50" rx="8" />
-                <text x="500" y="536" class="node-title">RST Pembagian</text>
-                <text x="500" y="550" class="node-tag">Bus Distribusi Fasa 3</text>
+              <!-- 6. MCB KONTROL / AUXILIARY (Terpisah di Sebelah Kanan MCCB Utama) -->
+              <g class="node node-protection" data-id="mcb-aux" tabindex="0" role="button" aria-label="Komponen MCB Kontrol Auxiliary">
+                <!-- Casing MCB Modular Putih-Abu -->
+                <rect x="645" y="398" width="60" height="82" rx="4" class="mcb-aux-case comp-body" />
+                
+                <!-- Terminal Atas & Bawah MCB -->
+                <rect x="667" y="393" width="16" height="8" rx="2" class="mcb-aux-terminal" />
+                <rect x="667" y="476" width="16" height="8" rx="2" class="mcb-aux-terminal" />
+
+                <!-- Label MCB Auxiliary -->
+                <text x="675" y="416" class="mcb-aux-title">MCB AUX</text>
+                <text x="675" y="428" class="mcb-aux-sub">Kontrol</text>
+
+                <!-- Tuas Toggle MCB -->
+                <rect x="668" y="437" width="14" height="16" rx="2" class="mcb-aux-toggle" />
+                <text x="675" y="468" fill="#15803d" font-size="7.5" font-weight="bold" text-anchor="middle">ON</text>
               </g>
 
-              <!-- 8. GEDUNG A -->
-              <g class="node node-building" data-id="gedung-a" tabindex="0" role="button" aria-label="Komponen Gedung A">
-                <rect x="90" y="600" width="140" height="50" rx="8" />
-                <text x="160" y="626" class="node-title">Gedung A</text>
-                <text x="160" y="640" class="node-tag">Beban Kantor</text>
+              <!-- ====================================================
+                   BAGIAN TENGAH MDB: KONDUKTOR & BUSBAR 3 FASA
+                   ==================================================== -->
+
+              <!-- Konduktor Penghubung dari Terminal Bawah MCCB ke 3 Bilah Busbar -->
+              <!-- Drop Fasa R: dari (455, 490) turun langsung ke Busbar R di y=518 -->
+              <line x1="455" y1="490" x2="455" y2="518" class="conductor-r" />
+              <circle cx="455" cy="523" r="3.5" class="busbar-bolt" />
+
+              <!-- Drop Fasa S: dari (500, 490) turun langsung ke Busbar S di y=534 -->
+              <line x1="500" y1="490" x2="500" y2="534" class="conductor-s" />
+              <circle cx="500" cy="539" r="3.5" class="busbar-bolt" />
+
+              <!-- Drop Fasa T: dari (545, 490) turun langsung ke Busbar T di y=550 -->
+              <line x1="545" y1="490" x2="545" y2="550" class="conductor-t" />
+              <circle cx="545" cy="555" r="3.5" class="busbar-bolt" />
+
+              <!-- 7. BUSBAR 3 FASA HORIZONTAL (R - S - T) -->
+              <g class="node node-distribution" data-id="rst-pembagian" tabindex="0" role="button" aria-label="Komponen Busbar 3 Fasa">
+                
+                <!-- Area Deteksi Klik Busbar yang Nyaman -->
+                <rect x="180" y="508" width="640" height="58" rx="4" fill="transparent" class="comp-body" />
+
+                <!-- Isolator Penyangga Busbar (Insulator Brackets / Dudukan Resin Merah) -->
+                <rect x="195" y="512" width="18" height="50" rx="3" class="busbar-support-bracket" />
+                <rect x="475" y="512" width="18" height="50" rx="3" class="busbar-support-bracket" />
+                <rect x="787" y="512" width="18" height="50" rx="3" class="busbar-support-bracket" />
+
+                <!-- BILAH 1: BUSBAR FASA R (Merah/Red) -->
+                <rect x="180" y="518" width="640" height="10" rx="2" class="busbar-bar-r" />
+                <rect x="182" y="519" width="22" height="8" rx="1" fill="#7f1d1d" />
+                <text x="193" y="526" class="busbar-label-r">R</text>
+                <rect x="796" y="519" width="22" height="8" rx="1" fill="#7f1d1d" />
+                <text x="807" y="526" class="busbar-label-r">R</text>
+
+                <!-- BILAH 2: BUSBAR FASA S (Kuning-Emas/Amber) -->
+                <rect x="180" y="534" width="640" height="10" rx="2" class="busbar-bar-s" />
+                <rect x="182" y="535" width="22" height="8" rx="1" fill="#78350f" />
+                <text x="193" y="542" class="busbar-label-s">S</text>
+                <rect x="796" y="535" width="22" height="8" rx="1" fill="#78350f" />
+                <text x="807" y="542" class="busbar-label-s">S</text>
+
+                <!-- BILAH 3: BUSBAR FASA T (Hitam/Dark Slate) -->
+                <rect x="180" y="550" width="640" height="10" rx="2" class="busbar-bar-t" />
+                <rect x="182" y="551" width="22" height="8" rx="1" fill="#0f172a" />
+                <text x="193" y="558" class="busbar-label-t">T</text>
+                <rect x="796" y="551" width="22" height="8" rx="1" fill="#0f172a" />
+                <text x="807" y="558" class="busbar-label-t">T</text>
+
+                <!-- Baut Sambungan Tap Konduktor pada Busbar Menuju 5 Breaker -->
+                <circle cx="190" cy="523" r="3" class="busbar-bolt" />
+                <circle cx="200" cy="539" r="3" class="busbar-bolt" />
+                <circle cx="210" cy="555" r="3" class="busbar-bolt" />
+
+                <circle cx="340" cy="523" r="3" class="busbar-bolt" />
+                <circle cx="350" cy="539" r="3" class="busbar-bolt" />
+                <circle cx="360" cy="555" r="3" class="busbar-bolt" />
+
+                <circle cx="490" cy="523" r="3" class="busbar-bolt" />
+                <circle cx="500" cy="539" r="3" class="busbar-bolt" />
+                <circle cx="510" cy="555" r="3" class="busbar-bolt" />
+
+                <circle cx="640" cy="523" r="3" class="busbar-bolt" />
+                <circle cx="650" cy="539" r="3" class="busbar-bolt" />
+                <circle cx="660" cy="555" r="3" class="busbar-bolt" />
+
+                <circle cx="790" cy="523" r="3" class="busbar-bolt" />
+                <circle cx="800" cy="539" r="3" class="busbar-bolt" />
+                <circle cx="810" cy="555" r="3" class="busbar-bolt" />
+
+                <!-- Label Teks Keterangan Busbar -->
+                <text x="500" y="575" fill="#64748b" font-size="9" font-weight="700" text-anchor="middle">REL TEMBAGA DISTRIBUSI 3 FASA (R - S - T)</text>
               </g>
 
-              <!-- 9. GEDUNG B -->
-              <g class="node node-building" data-id="gedung-b" tabindex="0" role="button" aria-label="Komponen Gedung B">
-                <rect x="320" y="600" width="140" height="50" rx="8" />
-                <text x="390" y="626" class="node-title">Gedung B</text>
-                <text x="390" y="640" class="node-tag">Beban Kantor</text>
+              <!-- ====================================================
+                   BAGIAN SAMPING: REL NETRAL (N) & GROUNDING (PE)
+                   ==================================================== -->
+              <!-- Rel Netral (N) Sisi Kiri Panel -->
+              <g class="neutral-assembly">
+                <rect x="135" y="505" width="30" height="120" rx="4" class="bar-neutral-rail" />
+                <text x="150" y="525" class="bar-tag-code">N</text>
+                <text x="150" y="540" class="bar-tag-name">Netral</text>
+                <!-- Terminal Baut Netral -->
+                <circle cx="150" cy="560" r="3" fill="#ffffff" />
+                <circle cx="150" cy="580" r="3" fill="#ffffff" />
+                <circle cx="150" cy="600" r="3" fill="#ffffff" />
               </g>
 
-              <!-- 10. GEDUNG C -->
-              <g class="node node-building" data-id="gedung-c" tabindex="0" role="button" aria-label="Komponen Gedung C">
-                <rect x="540" y="600" width="140" height="50" rx="8" />
-                <text x="610" y="626" class="node-title">Gedung C</text>
-                <text x="610" y="640" class="node-tag">Beban Kantor</text>
+              <!-- Rel Grounding / Protective Earth (PE) Sisi Kanan Panel -->
+              <g class="ground-assembly">
+                <rect x="835" y="505" width="30" height="120" rx="4" class="bar-ground-rail" />
+                <text x="850" y="525" class="bar-tag-code">PE</text>
+                <text x="850" y="540" class="bar-tag-name">Ground</text>
+                <!-- Terminal Baut Grounding -->
+                <circle cx="850" cy="560" r="3" fill="#ffffff" />
+                <circle cx="850" cy="580" r="3" fill="#ffffff" />
+                <circle cx="850" cy="600" r="3" fill="#ffffff" />
+                <text x="850" y="618" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle">&#9178;</text>
               </g>
 
-              <!-- 11. GEDUNG D -->
-              <g class="node node-building" data-id="gedung-d" tabindex="0" role="button" aria-label="Komponen Gedung D">
-                <rect x="770" y="600" width="140" height="50" rx="8" />
-                <text x="840" y="626" class="node-title">Gedung D</text>
-                <text x="840" y="640" class="node-tag">Beban Kantor</text>
+              <!-- ====================================================
+                   BAGIAN BAWAH MDB: TEPAT 5 OUTGOING BREAKER HORIZONTAL
+                   ==================================================== -->
+
+              <!-- Jalur Konduktor Tap dari Busbar Menuju Masukan 5 Breaker -->
+              <!-- Breaker 1 Taps -->
+              <line x1="190" y1="528" x2="190" y2="610" class="conductor-r" />
+              <line x1="200" y1="544" x2="200" y2="610" class="conductor-s" />
+              <line x1="210" y1="560" x2="210" y2="610" class="conductor-t" />
+
+              <!-- Breaker 2 Taps -->
+              <line x1="340" y1="528" x2="340" y2="610" class="conductor-r" />
+              <line x1="350" y1="544" x2="350" y2="610" class="conductor-s" />
+              <line x1="360" y1="560" x2="360" y2="610" class="conductor-t" />
+
+              <!-- Breaker 3 Taps -->
+              <line x1="490" y1="528" x2="490" y2="610" class="conductor-r" />
+              <line x1="500" y1="544" x2="500" y2="610" class="conductor-s" />
+              <line x1="510" y1="560" x2="510" y2="610" class="conductor-t" />
+
+              <!-- Breaker 4 Taps -->
+              <line x1="640" y1="528" x2="640" y2="610" class="conductor-r" />
+              <line x1="650" y1="544" x2="650" y2="610" class="conductor-s" />
+              <line x1="660" y1="560" x2="660" y2="610" class="conductor-t" />
+
+              <!-- Breaker 5 Taps -->
+              <line x1="790" y1="528" x2="790" y2="610" class="conductor-r" />
+              <line x1="800" y1="544" x2="800" y2="610" class="conductor-s" />
+              <line x1="810" y1="560" x2="810" y2="610" class="conductor-t" />
+
+              <!-- 8. BREAKER 1 (Outgoing Feeder 1) -->
+              <g class="node node-protection" data-id="feeder-1" tabindex="0" role="button" aria-label="Breaker Feeder 1">
+                <rect x="160" y="610" width="80" height="74" rx="5" class="breaker-unit-case comp-body" />
+                <rect x="175" y="606" width="50" height="6" rx="1" class="mccb-terminal" />
+                <text x="200" y="630" class="breaker-unit-title">F1</text>
+                <text x="200" y="643" class="breaker-unit-sub">Breaker 1</text>
+                <rect x="192" y="650" width="16" height="14" rx="2" class="breaker-unit-toggle" />
+                <rect x="175" y="682" width="50" height="6" rx="1" class="mccb-terminal" />
+              </g>
+
+              <!-- 9. BREAKER 2 (Outgoing Feeder 2) -->
+              <g class="node node-protection" data-id="feeder-2" tabindex="0" role="button" aria-label="Breaker Feeder 2">
+                <rect x="310" y="610" width="80" height="74" rx="5" class="breaker-unit-case comp-body" />
+                <rect x="325" y="606" width="50" height="6" rx="1" class="mccb-terminal" />
+                <text x="350" y="630" class="breaker-unit-title">F2</text>
+                <text x="350" y="643" class="breaker-unit-sub">Breaker 2</text>
+                <rect x="342" y="650" width="16" height="14" rx="2" class="breaker-unit-toggle" />
+                <rect x="325" y="682" width="50" height="6" rx="1" class="mccb-terminal" />
+              </g>
+
+              <!-- 10. BREAKER 3 (Outgoing Feeder 3) -->
+              <g class="node node-protection" data-id="feeder-3" tabindex="0" role="button" aria-label="Breaker Feeder 3">
+                <rect x="460" y="610" width="80" height="74" rx="5" class="breaker-unit-case comp-body" />
+                <rect x="475" y="606" width="50" height="6" rx="1" class="mccb-terminal" />
+                <text x="500" y="630" class="breaker-unit-title">F3</text>
+                <text x="500" y="643" class="breaker-unit-sub">Breaker 3</text>
+                <rect x="492" y="650" width="16" height="14" rx="2" class="breaker-unit-toggle" />
+                <rect x="475" y="682" width="50" height="6" rx="1" class="mccb-terminal" />
+              </g>
+
+              <!-- 11. BREAKER 4 (Outgoing Feeder 4) -->
+              <g class="node node-protection" data-id="feeder-4" tabindex="0" role="button" aria-label="Breaker Feeder 4">
+                <rect x="610" y="610" width="80" height="74" rx="5" class="breaker-unit-case comp-body" />
+                <rect x="625" y="606" width="50" height="6" rx="1" class="mccb-terminal" />
+                <text x="650" y="630" class="breaker-unit-title">F4</text>
+                <text x="650" y="643" class="breaker-unit-sub">Breaker 4</text>
+                <rect x="642" y="650" width="16" height="14" rx="2" class="breaker-unit-toggle" />
+                <rect x="625" y="682" width="50" height="6" rx="1" class="mccb-terminal" />
+              </g>
+
+              <!-- 12. BREAKER 5 (Outgoing Feeder 5) -->
+              <g class="node node-protection" data-id="feeder-5" tabindex="0" role="button" aria-label="Breaker Feeder 5">
+                <rect x="760" y="610" width="80" height="74" rx="5" class="breaker-unit-case comp-body" />
+                <rect x="775" y="606" width="50" height="6" rx="1" class="mccb-terminal" />
+                <text x="800" y="630" class="breaker-unit-title">F5</text>
+                <text x="800" y="643" class="breaker-unit-sub">Breaker 5</text>
+                <rect x="792" y="650" width="16" height="14" rx="2" class="breaker-unit-toggle" />
+                <rect x="775" y="682" width="50" height="6" rx="1" class="mccb-terminal" />
+              </g>
+
+              <!-- Kabel Internal dari Bawah Breaker Menuju Cable Glands Kabinet -->
+              <line x1="200" y1="688" x2="200" y2="755" class="wire" />
+              <line x1="350" y1="688" x2="350" y2="755" class="wire" />
+              <line x1="500" y1="688" x2="500" y2="755" class="wire" />
+              <line x1="650" y1="688" x2="650" y2="755" class="wire" />
+              <line x1="800" y1="688" x2="800" y2="755" class="wire" />
+
+            </g>
+
+            <!-- ========================================================
+                 LIMA JALUR BEBAN OUTGOING FEEDER (DI BAWAH PANEL MDB)
+                 ======================================================== -->
+            <g class="components-feeders" id="feeders-group">
+              
+              <!-- 13. FEEDER 1 -->
+              <g class="node node-building" data-id="feeder-1" tabindex="0" role="button" aria-label="Komponen Feeder 1">
+                <rect x="135" y="800" width="130" height="52" rx="8" />
+                <text x="200" y="825" class="node-title">FEEDER 1</text>
+                <text x="200" y="841" class="node-tag">Outgoing Feeder</text>
+              </g>
+
+              <!-- 14. FEEDER 2 -->
+              <g class="node node-building" data-id="feeder-2" tabindex="0" role="button" aria-label="Komponen Feeder 2">
+                <rect x="285" y="800" width="130" height="52" rx="8" />
+                <text x="350" y="825" class="node-title">FEEDER 2</text>
+                <text x="350" y="841" class="node-tag">Outgoing Feeder</text>
+              </g>
+
+              <!-- 15. FEEDER 3 -->
+              <g class="node node-building" data-id="feeder-3" tabindex="0" role="button" aria-label="Komponen Feeder 3">
+                <rect x="435" y="800" width="130" height="52" rx="8" />
+                <text x="500" y="825" class="node-title">FEEDER 3</text>
+                <text x="500" y="841" class="node-tag">Outgoing Feeder</text>
+              </g>
+
+              <!-- 16. FEEDER 4 -->
+              <g class="node node-building" data-id="feeder-4" tabindex="0" role="button" aria-label="Komponen Feeder 4">
+                <rect x="585" y="800" width="130" height="52" rx="8" />
+                <text x="650" y="825" class="node-title">FEEDER 4</text>
+                <text x="650" y="841" class="node-tag">Outgoing Feeder</text>
+              </g>
+
+              <!-- 17. FEEDER 5 -->
+              <g class="node node-building" data-id="feeder-5" tabindex="0" role="button" aria-label="Komponen Feeder 5">
+                <rect x="735" y="800" width="130" height="52" rx="8" />
+                <text x="800" y="825" class="node-title">FEEDER 5</text>
+                <text x="800" y="841" class="node-tag">Outgoing Feeder</text>
               </g>
 
             </g>
@@ -179,7 +465,7 @@
         </div>
 
         <!-- ========================================================
-             BAGIAN LEGENDA: Kategori Warna Komponen
+             BAGIAN LEGENDA: Kategori Warna Komponen (Light Theme)
              ======================================================== -->
         <div class="legend-container">
           <div class="legend-title">Kategori Legenda:</div>
@@ -190,19 +476,19 @@
             </div>
             <div class="legend-item">
               <span class="legend-color color-panel"></span>
-              <span class="legend-label">Panel</span>
+              <span class="legend-label">Panel Distribusi (MDB)</span>
             </div>
             <div class="legend-item">
               <span class="legend-color color-protection"></span>
-              <span class="legend-label">Proteksi</span>
+              <span class="legend-label">Proteksi (MCCB / MCB)</span>
             </div>
             <div class="legend-item">
               <span class="legend-color color-distribution"></span>
-              <span class="legend-label">Distribusi</span>
+              <span class="legend-label">Busbar 3 Fasa (R-S-T)</span>
             </div>
             <div class="legend-item">
               <span class="legend-color color-building"></span>
-              <span class="legend-label">Gedung</span>
+              <span class="legend-label">Outgoing Feeder</span>
             </div>
           </div>
         </div>
@@ -236,8 +522,11 @@
               <span class="info-badge" id="comp-type">-</span>
             </div>
 
-            <div class="info-row info-desc-row">
-              <span class="info-label">Keterangan Singkat</span>
+            <!-- Kontainer atribut detail dinamis (Sistem, Status, Sumber, Tujuan, Beban, Komponen Utama) -->
+            <div class="info-extra-container" id="comp-extra-details"></div>
+
+            <div class="info-row info-desc-row" id="comp-desc-container">
+              <span class="info-label" id="comp-desc-label">Keterangan Singkat</span>
               <p class="info-desc-text" id="comp-desc">-</p>
             </div>
           </div>

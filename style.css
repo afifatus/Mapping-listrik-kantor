@@ -836,4 +836,143 @@ body {
   .info-body {
     padding: 1rem;
   }
+}/* ========================================================
+   LIGHT THEME - UBAH BACKGROUND HITAM MENJADI PUTIH
+   ======================================================== */
+
+/* Background seluruh halaman */
+html,
+body {
+  background: #f8fafc !important;
+  color: #1f2937 !important;
 }
+
+/* Header atas */
+.header {
+  background: #ffffff !important;
+  color: #1f2937 !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+/* Judul dan subtitle */
+.header h1,
+.header h2,
+.header .title {
+  color: #1f2937 !important;
+}
+
+.header .subtitle {
+  color: #64748b !important;
+}
+
+/* Card utama */
+.card {
+  background: #ffffff !important;
+  color: #1f2937 !important;
+  border: 1px solid #dbe3ec !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06) !important;
+}
+
+/* Header card */
+.card-header {
+  background: #ffffff !important;
+  color: #1f2937 !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+/* Area diagram */
+.svg-container {
+  background: #ffffff !important;
+  color: #1f2937 !important;
+}
+
+/* Panel detail di kanan */
+.info-panel,
+.info-body,
+.info-section,
+.detail-box {
+  background: #ffffff !important;
+  color: #1f2937 !important;
+}
+
+/* Teks detail */
+.info-label,
+.info-spec-label,
+.comp-desc-label {
+  color: #64748b !important;
+}
+
+.info-value,
+.info-spec-val,
+.comp-desc,
+.comp-list-item {
+  color: #1f2937 !important;
+}
+
+/* Footer */
+.footer {
+  background: #ffffff !important;
+  color: #64748b !important;
+  border-top: 1px solid #e2e8f0 !important;
+}
+
+/* Footer/card footer */
+.card-footer {
+  background: #f8fafc !important;
+  color: #64748b !important;
+  border-top: 1px solid #e2e8f0 !important;
+}
+
+/* Empty state */
+#empty-state {
+  background: #ffffff !important;
+  color: #64748b !important;
+}
+
+/* Badge dan informasi */
+.badge-system {
+  background: #eff6ff !important;
+  color: #2563eb !important;
+  border-color: #bfdbfe !important;
+}
+
+.badge-status-active {
+  background: #ecfdf5 !important;
+  color: #16a34a !important;
+  border-color: #bbf7d0 !important;
+}
+
+/* Legend */
+.legend {
+  background: #ffffff !important;
+  color: #1f2937 !important;
+  border-top: 1px solid #e2e8f0 !important;
+}
+
+.legend-title {
+  color: #64748b !important;
+}
+
+.legend-label {
+  color: #1f2937 !important;
+}
+
+/* Tombol interaktif */
+button {
+  color: #1f2937;
+}
+
+/* Link */
+a {
+  color: #2563eb;
+}
+
+/* ========================================================
+   PENTING:
+   Warna komponen listrik MDB TIDAK DIUBAH.
+   MCCB, MCB, busbar, feeder, dan kabel tetap memakai
+   warna masing-masing.
+   ======================================================== */
+
+
+

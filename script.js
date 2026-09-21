@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     "panel-input-ats": {
       nama: "Panel Input ATS",
-      jenis: "Panel",
+      jenis: "Panel Masukan",
       keterangan: "Panel penerima daya masukan yang menyalurkan listrik dari sumber PLN menuju switch pemindah (ATS)."
     },
     "ats": {
@@ -37,42 +37,82 @@ document.addEventListener("DOMContentLoaded", () => {
       jenis: "Proteksi & Pengalih",
       keterangan: "Perangkat otomatis yang berpindah menghubungkan beban antara PLN dan Genset secara aman tanpa tumpang tindih."
     },
-    "panel-output": {
-      nama: "Panel Output",
-      jenis: "Panel",
-      keterangan: "Panel distribusi utama yang menerima daya bersih dari ATS untuk disalurkan ke sistem pengaman instalasi."
+    "mdb-01": {
+      nama: "MDB-01",
+      jenis: "Main Distribution Board",
+      fungsi: "Panel distribusi utama yang menerima suplai listrik dan membaginya ke 5 feeder/beban.",
+      sistem: "3 Phase",
+      komponenUtama: [
+        "MCCB Utama",
+        "MCB Kontrol/Auxiliary",
+        "Busbar 3 Fasa",
+        "5 Outgoing Feeder",
+        "Sistem Netral",
+        "Sistem Grounding"
+      ]
     },
     "mccb-main": {
-      nama: "MCCB Main Output",
-      jenis: "Proteksi",
-      keterangan: "Pemutus sirkuit utama (Molded Case Circuit Breaker) untuk mengamankan sistem dari beban lebih dan korsleting."
+      nama: "MCCB Utama",
+      jenis: "Proteksi Utama",
+      fungsi: "Proteksi utama MDB",
+      status: "Aktif"
+    },
+    "mcb-aux": {
+      nama: "MCB Kontrol/Auxiliary",
+      jenis: "Proteksi Kontrol",
+      fungsi: "Sirkuit kontrol/auxiliary",
+      status: "Aktif"
     },
     "rst-pembagian": {
-      nama: "RST Pembagian",
-      jenis: "Distribusi",
-      keterangan: "Rel busbar pembagian fasa listrik (Fasa R, S, dan T) untuk membagi suplai daya merata ke gedung-gedung kantor."
+      nama: "Busbar 3 Fasa",
+      jenis: "Distribusi Daya",
+      sistem: "3 Phase",
+      fungsi: "Distribusi daya dari MCCB ke outgoing feeder"
     },
-    "gedung-a": {
-      nama: "Gedung A",
-      jenis: "Gedung (Beban)",
-      keterangan: "Blok bangunan perkantoran A yang menerima suplai daya dari busbar RST pembagian."
+    "feeder-1": {
+      nama: "FEEDER 1",
+      jenis: "Outgoing Feeder",
+      status: "Aktif",
+      sumber: "MDB-01",
+      tujuan: "Belum ditentukan",
+      beban: "Belum ditentukan"
     },
-    "gedung-b": {
-      nama: "Gedung B",
-      jenis: "Gedung (Beban)",
-      keterangan: "Blok bangunan perkantoran B yang menerima suplai daya dari busbar RST pembagian."
+    "feeder-2": {
+      nama: "FEEDER 2",
+      jenis: "Outgoing Feeder",
+      status: "Aktif",
+      sumber: "MDB-01",
+      tujuan: "Belum ditentukan",
+      beban: "Belum ditentukan"
     },
-    "gedung-c": {
-      nama: "Gedung C",
-      jenis: "Gedung (Beban)",
-      keterangan: "Blok bangunan perkantoran C yang menerima suplai daya dari busbar RST pembagian."
+    "feeder-3": {
+      nama: "FEEDER 3",
+      jenis: "Outgoing Feeder",
+      status: "Aktif",
+      sumber: "MDB-01",
+      tujuan: "Belum ditentukan",
+      beban: "Belum ditentukan"
     },
-    "gedung-d": {
-      nama: "Gedung D",
-      jenis: "Gedung (Beban)",
-      keterangan: "Blok bangunan perkantoran D yang menerima suplai daya dari busbar RST pembagian."
+    "feeder-4": {
+      nama: "FEEDER 4",
+      jenis: "Outgoing Feeder",
+      status: "Aktif",
+      sumber: "MDB-01",
+      tujuan: "Belum ditentukan",
+      beban: "Belum ditentukan"
+    },
+    "feeder-5": {
+      nama: "FEEDER 5",
+      jenis: "Outgoing Feeder",
+      status: "Aktif",
+      sumber: "MDB-01",
+      tujuan: "Belum ditentukan",
+      beban: "Belum ditentukan"
     }
   };
+
+  // Kompatibilitas jika panel-output masih dipanggil
+  dataKomponen["panel-output"] = dataKomponen["mdb-01"];
 
   /* --------------------------------------------------------
      2. MENGAMBIL ELEMEN HTML (DOM SELECTION)
@@ -88,6 +128,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const detailBox = document.getElementById("detail-box");
   const compName = document.getElementById("comp-name");
   const compType = document.getElementById("comp-type");
+  const compExtraDetails = document.getElementById("comp-extra-details");
+  const compDescContainer = document.getElementById("comp-desc-container");
+  const compDescLabel = document.getElementById("comp-desc-label");
   const compDesc = document.getElementById("comp-desc");
 
   /* --------------------------------------------------------
@@ -104,23 +147,99 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // 1. Perbarui teks pada panel informasi di sebelah kanan
+    // 1. Perbarui nama dan jenis pada panel informasi di sebelah kanan
     compName.textContent = data.nama;
     compType.textContent = data.jenis;
-    compDesc.textContent = data.keterangan;
 
-    // 2. Sembunyikan pesan awal 'empty state' dan tampilkan detail informasi
+    // 2. Bersihkan atribut detail tambahan sebelumnya
+    if (compExtraDetails) {
+      compExtraDetails.innerHTML = "";
+
+      // Render atribut spesifikasi (Sistem, Status, Sumber, Tujuan, Beban) jika tersedia
+      const specItems = [];
+      if (data.sistem) {
+        specItems.push({ label: "Sistem", val: `<span class="badge-system">${data.sistem}</span>` });
+      }
+      if (data.status) {
+        specItems.push({ label: "Status", val: `<span class="badge-status-active">${data.status}</span>` });
+      }
+      if (data.sumber) {
+        specItems.push({ label: "Sumber", val: data.sumber });
+      }
+      if (data.tujuan) {
+        specItems.push({ label: "Tujuan", val: data.tujuan });
+      }
+      if (data.beban) {
+        specItems.push({ label: "Beban", val: data.beban });
+      }
+
+      if (specItems.length > 0) {
+        const specGrid = document.createElement("div");
+        specGrid.className = "info-spec-grid";
+        specItems.forEach(item => {
+          const row = document.createElement("div");
+          row.className = "info-spec-item";
+          row.innerHTML = `
+            <span class="info-spec-label">${item.label}</span>
+            <span class="info-spec-val">${item.val}</span>
+          `;
+          specGrid.appendChild(row);
+        });
+        compExtraDetails.appendChild(specGrid);
+      }
+
+      // Render daftar Komponen Utama (untuk MDB-01) jika tersedia
+      if (data.komponenUtama && Array.isArray(data.komponenUtama)) {
+        const listSection = document.createElement("div");
+        listSection.className = "info-row";
+        listSection.innerHTML = `
+          <span class="info-label">Komponen Utama</span>
+          <ul class="comp-list">
+            ${data.komponenUtama.map(item => `
+              <li class="comp-list-item">
+                <span class="comp-list-bullet">&#9679;</span>
+                <span>${item}</span>
+              </li>
+            `).join("")}
+          </ul>
+        `;
+        compExtraDetails.appendChild(listSection);
+      }
+    }
+
+    // 3. Tampilkan Fungsi atau Keterangan Singkat
+    if (compDescContainer && compDesc) {
+      if (data.fungsi) {
+        compDescContainer.classList.remove("hidden");
+        if (compDescLabel) compDescLabel.textContent = "Fungsi";
+        compDesc.textContent = data.fungsi;
+      } else if (data.keterangan) {
+        compDescContainer.classList.remove("hidden");
+        if (compDescLabel) compDescLabel.textContent = "Keterangan Singkat";
+        compDesc.textContent = data.keterangan;
+      } else {
+        compDescContainer.classList.add("hidden");
+      }
+    }
+
+    // 4. Sembunyikan pesan awal 'empty state' dan tampilkan detail informasi
     emptyState.classList.add("hidden");
     detailBox.classList.remove("hidden");
 
-    // 3. Atur tanda aktif visual pada diagram SVG
+    // 5. Atur tanda aktif visual pada diagram SVG
     // Hapus kelas 'active' dari semua komponen terlebih dahulu
-    nodeElements.forEach(node => {
+    const allNodes = document.querySelectorAll(".node");
+    allNodes.forEach(node => {
       node.classList.remove("active");
     });
 
-    // Berikan kelas 'active' hanya pada komponen yang sedang diklik
-    elemenTerpilih.classList.add("active");
+    // Berikan kelas 'active' pada komponen yang memiliki data-id yang cocok
+    const matchingNodes = document.querySelectorAll(`.node[data-id="${idKomponen}"]`);
+    if (matchingNodes.length > 0) {
+      matchingNodes.forEach(node => node.classList.add("active"));
+    } else if (elemenTerpilih) {
+      elemenTerpilih.classList.add("active");
+    }
   }
 
   /* --------------------------------------------------------
@@ -129,7 +248,8 @@ document.addEventListener("DOMContentLoaded", () => {
      Kita melakukan perulangan (loop) ke semua elemen komponen SVG.
      Setiap komponen diberi perintah: 'Jika diklik, jalankan fungsi tampilkanDetail'.
   */
-  nodeElements.forEach(node => {
+  const clickableNodes = document.querySelectorAll(".node");
+  clickableNodes.forEach(node => {
     // Event ketika mouse mengklik elemen komponen
     node.addEventListener("click", () => {
       const idKomponen = node.getAttribute("data-id");

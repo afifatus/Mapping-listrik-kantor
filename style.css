@@ -974,5 +974,34 @@ a {
    warna masing-masing.
    ======================================================== */
 
+/* Ubah tulisan SVG yang putih menjadi hitam */
+svg text[fill="#fff"],
+svg text[fill="#FFF"],
+svg text[fill="#ffffff"],
+svg text[fill="#FFFFFF"],
+svg text[fill="white"],
+svg text[fill="WHITE"] {
+    fill: #111827 !important;
+}
 
+/* Tulisan utama MDB */
+.mdb-title,
+.mdb-nameplate,
+.mccb-title,
+.mccb-label {
+    fill: #111827 !important;
+    color: #111827 !important;
+}
+
+/* Judul MDB */
+.mdb-nameplate text,
+.mdb-title text {
+    fill: #111827 !important;
+}
+
+/* Tulisan MCCB utama */
+.mccb-case text,
+.mccb-unit text {
+    fill: #111827 !important;
+}
 

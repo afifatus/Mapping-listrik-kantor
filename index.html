@@ -1,27 +1,15 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Mapping Distribusi Listrik Kantor</title>
 
-    <link
-        rel="stylesheet"
-        href="./style.css"
-    >
-
+    <link rel="stylesheet" href="./style.css">
 </head>
 
-
 <body>
-
 
     <!-- =====================================================
          HEADER
@@ -36,30 +24,22 @@
             </div>
 
             <div>
-
-                <h1>
-                    Mapping Distribusi Listrik Kantor
-                </h1>
+                <h1>Mapping Distribusi Listrik Kantor</h1>
 
                 <p>
                     Visualisasi diagram sistem kelistrikan utama gedung perkantoran
                 </p>
-
             </div>
 
         </div>
 
 
         <div class="interactive">
-
             <span class="online-dot"></span>
-
             INTERAKTIF
-
         </div>
 
     </header>
-
 
 
     <!-- =====================================================
@@ -75,9 +55,6 @@
 
         <section class="diagram-card">
 
-
-            <!-- CARD HEADER -->
-
             <div class="card-header">
 
                 <div class="title-left">
@@ -92,7 +69,6 @@
 
                 </div>
 
-
                 <div class="interactive-small">
                     🔗 INTERAKTIF
                 </div>
@@ -100,13 +76,88 @@
             </div>
 
 
+            <div class="diagram-wrapper" id="diagramWrapper">
 
-            <!-- =================================================
-                 DIAGRAM
-            ================================================== -->
+                <div id="supportingPanelView" class="supporting-panel-view" hidden>
+                    <div class="supporting-panel-toolbar">
+                        <div>
+                            <span class="supporting-eyebrow">FEEDER 5 → RUANG SUPPORTING ENGINEER</span>
+                            <h2>PANEL SUPPORTING ENGINEER</h2>
+                            <p>Visual panel distribusi berdasarkan foto panel yang diberikan.</p>
+                        </div>
+                        <div class="supporting-live">● NORMAL</div>
+                    </div>
 
-            <div class="diagram-wrapper">
+                    <div class="supporting-panel-stage">
+                        <div class="real-panel-card">
+                            <div class="panel-door-header">
+                                <span>SUPPORTING ENGINEER</span>
+                                <span class="panel-door-code">FEEDER 5</span>
+                            </div>
 
+                            <div class="panel-door-body">
+                                <div class="indicator-stack">
+                                    <div class="indicator-unit off red"><span></span><b>MERAH</b><small>TRIP / FAULT</small></div>
+                                    <div class="indicator-unit on orange"><span></span><b>ORANYE</b><small>STATUS</small></div>
+                                    <div class="indicator-unit on green"><span></span><b>HIJAU</b><small>SUPPLY ON</small></div>
+                                </div>
+
+                                <div class="selector-unit">
+                                    <div class="selector-knob"><i></i></div>
+                                    <b>SELECTOR</b>
+                                    <small>NORMAL</small>
+                                </div>
+                            </div>
+
+                            <div class="panel-enclosure">
+                                <div class="breaker-section main-breaker">
+                                    <div class="breaker-title">MAIN BREAKER</div>
+                                    <div class="breaker-device">
+                                        <strong>MCCB</strong>
+                                        <span>25 A</span>
+                                        <small>3P</small>
+                                    </div>
+                                </div>
+
+                                <div class="breaker-section outgoing-section">
+                                    <div class="breaker-title">OUTGOING MCB — 8 SIRKUIT</div>
+                                    <div class="mcb-grid">
+                                        <div class="mini-mcb"><b>1</b><span>C2</span></div>
+                                        <div class="mini-mcb"><b>2</b><span>C10</span></div>
+                                        <div class="mini-mcb"><b>3</b><span>C10</span></div>
+                                        <div class="mini-mcb"><b>4</b><span>C25</span></div>
+                                        <div class="mini-mcb"><b>5</b><span>C16</span></div>
+                                        <div class="mini-mcb"><b>6</b><span>C25</span></div>
+                                        <div class="mini-mcb"><b>7</b><span>C6</span></div>
+                                        <div class="mini-mcb"><b>8</b><span>C25</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="supporting-panel-info">
+                            <div class="supporting-info-card">
+                                <span class="supporting-card-label">STATUS PANEL</span>
+                                <strong>SUPPLY NORMAL</strong>
+                                <p>Feeder 5 aktif menuju Panel Supporting Engineer.</p>
+                            </div>
+                            <div class="supporting-info-card">
+                                <span class="supporting-card-label">PROTEKSI UTAMA</span>
+                                <strong>MCCB 25 A</strong>
+                                <p>Perangkat proteksi utama yang terlihat pada panel.</p>
+                            </div>
+                            <div class="supporting-info-card">
+                                <span class="supporting-card-label">PROTEKSI CABANG</span>
+                                <strong>8 OUTGOING MCB</strong>
+                                <p>Rating yang terlihat: C2, C6, C10, C16, dan C25.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="supporting-panel-note">
+                        <b>Catatan visual:</b> fungsi lampu merah/oranye/hijau belum dapat dipastikan hanya dari foto, sehingga ditampilkan sebagai representasi simulasi dan tidak dianggap sebagai status listrik nyata.
+                    </div>
+                </div>
 
                 <!-- =================================================
                      PLN
@@ -114,8 +165,7 @@
 
                 <div
                     class="source-box component"
-                    data-component="pln"
-                >
+                    data-component="pln">
 
                     <div class="source-icon">
                         ⚡
@@ -123,9 +173,7 @@
 
                     <div class="component-content">
 
-                        <strong>
-                            PLN
-                        </strong>
+                        <strong>PLN</strong>
 
                         <span>
                             Sumber Utama (Utility)
@@ -144,15 +192,13 @@
                 </div>
 
 
-
                 <!-- =================================================
                      GENSET
                 ================================================== -->
 
                 <div
                     class="source-box genset component"
-                    data-component="genset"
-                >
+                    data-component="genset">
 
                     <div class="source-icon">
                         ⚙
@@ -160,9 +206,7 @@
 
                     <div class="component-content">
 
-                        <strong>
-                            Genset
-                        </strong>
+                        <strong>Genset</strong>
 
                         <span>
                             Sumber Cadangan (Backup)
@@ -181,7 +225,6 @@
                 </div>
 
 
-
                 <!-- =================================================
                      CONNECTOR PLN
                 ================================================== -->
@@ -191,7 +234,6 @@
                 <div class="arrow arrow-pln">
                     ▶
                 </div>
-
 
 
                 <!-- =================================================
@@ -205,15 +247,13 @@
                 </div>
 
 
-
                 <!-- =================================================
                      PANEL INPUT ATS
                 ================================================== -->
 
                 <div
                     class="panel-box panel-input component"
-                    data-component="panel"
-                >
+                    data-component="panel">
 
                     <div class="panel-icon">
                         ▣
@@ -242,13 +282,11 @@
                 </div>
 
 
-
                 <div class="vertical-wire wire-input"></div>
 
                 <div class="down-arrow arrow-input">
                     ▼
                 </div>
-
 
 
                 <!-- =================================================
@@ -257,8 +295,7 @@
 
                 <div
                     class="panel-box ats component"
-                    data-component="ats"
-                >
+                    data-component="ats">
 
                     <div class="panel-icon">
                         ⚙
@@ -287,13 +324,11 @@
                 </div>
 
 
-
                 <div class="vertical-wire wire-ats"></div>
 
                 <div class="down-arrow arrow-ats">
                     ▼
                 </div>
-
 
 
                 <!-- =================================================
@@ -308,13 +343,10 @@
                     <div class="mdb-header">
 
                         <div class="voltage">
-
                             ⚡
-
                             <strong>
                                 380/220 V
                             </strong>
-
                         </div>
 
 
@@ -336,15 +368,13 @@
                     </div>
 
 
-
                     <!-- =================================================
                          MCCB
                     ================================================== -->
 
                     <div
                         class="mccb component"
-                        data-component="mccb"
-                    >
+                        data-component="mccb">
 
                         <div class="device-icon">
                             ▣
@@ -373,15 +403,13 @@
                     </div>
 
 
-
                     <!-- =================================================
                          MCB
                     ================================================== -->
 
                     <div
                         class="mcb component"
-                        data-component="mcb"
-                    >
+                        data-component="mcb">
 
                         <div class="device-icon">
                             ▤
@@ -410,19 +438,15 @@
                     </div>
 
 
-
                     <!-- =================================================
-                         NEUTRAL
+                         N
                     ================================================== -->
 
                     <div
                         class="neutral-bar component"
-                        data-component="neutral"
-                    >
+                        data-component="neutral">
 
-                        <strong>
-                            N
-                        </strong>
+                        <strong>N</strong>
 
                         <span>
                             Neutral
@@ -434,21 +458,17 @@
                     </div>
 
 
-
                     <!-- =================================================
                          BUSBAR
                     ================================================== -->
 
                     <div
                         class="busbars component"
-                        data-component="busbar"
-                    >
+                        data-component="busbar">
 
                         <div class="phase-row phase-r">
 
-                            <span>
-                                R
-                            </span>
+                            <span>R</span>
 
                             <div></div>
 
@@ -457,9 +477,7 @@
 
                         <div class="phase-row phase-s">
 
-                            <span>
-                                S
-                            </span>
+                            <span>S</span>
 
                             <div></div>
 
@@ -468,9 +486,7 @@
 
                         <div class="phase-row phase-t">
 
-                            <span>
-                                T
-                            </span>
+                            <span>T</span>
 
                             <div></div>
 
@@ -484,15 +500,13 @@
                     </div>
 
 
-
                     <!-- =================================================
                          PE
                     ================================================== -->
 
                     <div
                         class="pe-bar component"
-                        data-component="pe"
-                    >
+                        data-component="pe">
 
                         <strong>
                             PE
@@ -509,7 +523,6 @@
                     </div>
 
 
-
                     <!-- =================================================
                          FEEDER ROW
                     ================================================== -->
@@ -517,16 +530,14 @@
                     <div class="feeder-row">
 
 
-                        <!-- =================================================
-                             FEEDER 1
-                        ================================================== -->
+                        <!-- FEEDER 1 -->
 
-                        <div class="feeder-column">
+                        <div
+                            class="feeder-column">
 
                             <div
                                 class="feeder component"
-                                data-component="feeder1"
-                            >
+                                data-component="feeder1">
 
                                 <div class="device-icon">
                                     ▤
@@ -554,20 +565,15 @@
 
                             </div>
 
-
                             <div class="phase-connection">
-
                                 <i></i>
                                 <i></i>
                                 <i></i>
-
                             </div>
-
 
                             <div
                                 class="load component"
-                                data-component="load1"
-                            >
+                                data-component="load1">
 
                                 <div class="load-icon">
                                     ▣
@@ -598,17 +604,14 @@
                         </div>
 
 
+                        <!-- FEEDER 2 -->
 
-                        <!-- =================================================
-                             FEEDER 2
-                        ================================================== -->
-
-                        <div class="feeder-column">
+                        <div
+                            class="feeder-column">
 
                             <div
                                 class="feeder component"
-                                data-component="feeder2"
-                            >
+                                data-component="feeder2">
 
                                 <div class="device-icon">
                                     ▤
@@ -636,20 +639,15 @@
 
                             </div>
 
-
                             <div class="phase-connection">
-
                                 <i></i>
                                 <i></i>
                                 <i></i>
-
                             </div>
-
 
                             <div
                                 class="load component"
-                                data-component="load2"
-                            >
+                                data-component="load2">
 
                                 <div class="load-icon">
                                     ▣
@@ -680,17 +678,14 @@
                         </div>
 
 
+                        <!-- FEEDER 3 -->
 
-                        <!-- =================================================
-                             FEEDER 3
-                        ================================================== -->
-
-                        <div class="feeder-column">
+                        <div
+                            class="feeder-column">
 
                             <div
                                 class="feeder component"
-                                data-component="feeder3"
-                            >
+                                data-component="feeder3">
 
                                 <div class="device-icon">
                                     ▤
@@ -718,20 +713,15 @@
 
                             </div>
 
-
                             <div class="phase-connection">
-
                                 <i></i>
                                 <i></i>
                                 <i></i>
-
                             </div>
-
 
                             <div
                                 class="load component"
-                                data-component="load3"
-                            >
+                                data-component="load3">
 
                                 <div class="load-icon">
                                     ▣
@@ -762,17 +752,14 @@
                         </div>
 
 
+                        <!-- FEEDER 4 -->
 
-                        <!-- =================================================
-                             FEEDER 4
-                        ================================================== -->
-
-                        <div class="feeder-column">
+                        <div
+                            class="feeder-column">
 
                             <div
                                 class="feeder component"
-                                data-component="feeder4"
-                            >
+                                data-component="feeder4">
 
                                 <div class="device-icon">
                                     ▤
@@ -800,20 +787,15 @@
 
                             </div>
 
-
                             <div class="phase-connection">
-
                                 <i></i>
                                 <i></i>
                                 <i></i>
-
                             </div>
-
 
                             <div
                                 class="load component"
-                                data-component="load4"
-                            >
+                                data-component="load4">
 
                                 <div class="load-icon">
                                     ▣
@@ -844,18 +826,14 @@
                         </div>
 
 
+                        <!-- FEEDER 5 -->
 
-                        <!-- =================================================
-                             FEEDER 5
-                             PANEL SUPPORTING ENGINEER
-                        ================================================== -->
-
-                        <div class="feeder-column">
+                        <div
+                            class="feeder-column">
 
                             <div
                                 class="feeder component"
-                                data-component="feeder5"
-                            >
+                                data-component="feeder5">
 
                                 <div class="device-icon">
                                     ▤
@@ -868,7 +846,7 @@
                                     </strong>
 
                                     <span>
-                                        Panel Supporting Engineer
+                                        MCCB/MCB
                                     </span>
 
                                     <small>
@@ -883,20 +861,15 @@
 
                             </div>
 
-
                             <div class="phase-connection">
-
                                 <i></i>
                                 <i></i>
                                 <i></i>
-
                             </div>
-
 
                             <div
                                 class="load component"
-                                data-component="load5"
-                            >
+                                data-component="load5">
 
                                 <div class="load-icon">
                                     ▣
@@ -926,14 +899,12 @@
 
                         </div>
 
-
                     </div>
 
                 </div>
 
 
             </div>
-
 
 
             <!-- =================================================
@@ -947,47 +918,28 @@
                 </strong>
 
                 <span>
-
                     <i class="legend-source"></i>
-
                     Sumber Listrik
-
                 </span>
 
-
                 <span>
-
                     <i class="legend-panel"></i>
-
                     Panel Distribusi (MDB)
-
                 </span>
 
-
                 <span>
-
                     <i class="legend-protection"></i>
-
                     Proteksi (MCCB / MCB)
-
                 </span>
 
-
                 <span>
-
                     <i class="legend-busbar"></i>
-
                     Busbar 3 Fasa (R-S-T)
-
                 </span>
 
-
                 <span>
-
                     <i class="legend-outgoing"></i>
-
                     Outgoing Feeder
-
                 </span>
 
             </div>
@@ -995,15 +947,11 @@
         </section>
 
 
-
         <!-- =================================================
              DETAIL COMPONENT
         ================================================== -->
 
         <aside class="detail-card">
-
-
-            <!-- DETAIL HEADER -->
 
             <div class="detail-header">
 
@@ -1018,11 +966,7 @@
             </div>
 
 
-
             <div class="detail-content">
-
-
-                <!-- NAMA -->
 
                 <div class="detail-label">
                     NAMA KOMPONEN
@@ -1033,12 +977,8 @@
                 </h2>
 
 
-
                 <div class="divider"></div>
 
-
-
-                <!-- JENIS -->
 
                 <div class="detail-label">
                     JENIS KOMPONEN
@@ -1046,18 +986,15 @@
 
                 <div
                     class="detail-badge"
-                    id="detailType"
-                >
-                    Proteksi Utama (MCCB)
-                </div>
+                    id="detailType">
 
+                    Proteksi Utama (MCCB)
+
+                </div>
 
 
                 <div class="divider"></div>
 
-
-
-                <!-- INFORMASI -->
 
                 <div class="detail-label">
                     INFORMASI DETAIL
@@ -1066,17 +1003,46 @@
 
                 <div
                     class="detail-info"
-                    id="detailInfo"
-                >
+                    id="detailInfo">
+
                 </div>
 
+                <div id="supportingPanelVisual" class="supporting-panel-visual" hidden>
+                    <div class="virtual-panel-head">
+                        <div>
+                            <strong>PANEL SUPPORTING ENGINEER</strong>
+                            <span>Representasi indikator panel</span>
+                        </div>
+                        <span class="panel-status-badge" id="supportingPanelStatus">NORMAL</span>
+                    </div>
+
+                    <div class="indicator-panel">
+                        <div class="indicator-lamp lamp-red">
+                            <span class="lamp"></span>
+                            <strong>MERAH</strong>
+                            <small>TRIP / FAULT</small>
+                        </div>
+                        <div class="indicator-lamp lamp-orange">
+                            <span class="lamp"></span>
+                            <strong>ORANYE</strong>
+                            <small>STATUS / CONTROL</small>
+                        </div>
+                        <div class="indicator-lamp lamp-green">
+                            <span class="lamp"></span>
+                            <strong>HIJAU</strong>
+                            <small>SUPPLY ON</small>
+                        </div>
+                    </div>
+
+                    <div class="panel-note">
+                        <span>i</span>
+                        <p>Lampu merupakan representasi visual kondisi panel pada simulasi web. Fungsi indikator mengikuti dokumentasi panel jika tersedia.</p>
+                    </div>
+                </div>
 
 
                 <div class="divider"></div>
 
-
-
-                <!-- DESKRIPSI -->
 
                 <div class="detail-label">
                     KETERANGAN SINGKAT
@@ -1085,8 +1051,7 @@
 
                 <div
                     class="detail-description"
-                    id="detailDescription"
-                >
+                    id="detailDescription">
 
                     MCCB utama digunakan sebagai pengaman
                     dan pemutus utama sebelum daya listrik
@@ -1094,133 +1059,6 @@
 
                 </div>
 
-
-
-                <!-- =================================================
-                     VISUAL PANEL SUPPORTING ENGINEER
-                ================================================== -->
-
-                <div
-                    id="supportingPanelVisual"
-                    class="supporting-panel-visual"
-                    hidden
-                >
-
-
-                    <!-- HEADER PANEL -->
-
-                    <div class="supporting-panel-header">
-
-                        <div>
-
-                            <span class="supporting-panel-kicker">
-                                PANEL DISTRIBUSI
-                            </span>
-
-                            <h3>
-                                PANEL SUPPORTING ENGINEER
-                            </h3>
-
-                        </div>
-
-
-                        <span class="supporting-panel-status">
-                            NORMAL
-                        </span>
-
-                    </div>
-
-
-
-                    <!-- INDIKATOR -->
-
-                    <div class="supporting-indicators">
-
-
-                        <!-- MERAH -->
-
-                        <div class="indicator-card">
-
-                            <div class="indicator-lamp lamp-red"></div>
-
-                            <div class="indicator-text">
-
-                                <strong>
-                                    MERAH
-                                </strong>
-
-                                <span>
-                                    TRIP / FAULT
-                                </span>
-
-                            </div>
-
-                        </div>
-
-
-
-                        <!-- ORANYE -->
-
-                        <div class="indicator-card">
-
-                            <div class="indicator-lamp lamp-orange"></div>
-
-                            <div class="indicator-text">
-
-                                <strong>
-                                    ORANYE
-                                </strong>
-
-                                <span>
-                                    STATUS / CONTROL
-                                </span>
-
-                            </div>
-
-                        </div>
-
-
-
-                        <!-- HIJAU -->
-
-                        <div class="indicator-card">
-
-                            <div class="indicator-lamp lamp-green"></div>
-
-                            <div class="indicator-text">
-
-                                <strong>
-                                    HIJAU
-                                </strong>
-
-                                <span>
-                                    SUPPLY ON
-                                </span>
-
-                            </div>
-
-                        </div>
-
-
-                    </div>
-
-
-
-                    <!-- CATATAN -->
-
-                    <div class="supporting-panel-note">
-
-                        Lampu merupakan representasi visual kondisi
-                        panel pada simulasi web. Fungsi indikator
-                        mengikuti dokumentasi panel jika tersedia.
-
-                    </div>
-
-                </div>
-
-
-
-                <!-- HELP -->
 
                 <div class="click-help">
 
@@ -1235,14 +1073,11 @@
 
                 </div>
 
-
             </div>
 
         </aside>
 
-
     </main>
-
 
 
     <!-- =====================================================
@@ -1252,20 +1087,12 @@
     <footer>
 
         Mapping Distribusi Listrik Kantor
-
         • Versi Visualisasi Interaktif
 
     </footer>
 
 
-
-    <!-- =====================================================
-         JAVASCRIPT
-    ====================================================== -->
-
     <script src="./script.js"></script>
 
-
 </body>
-
 </html>

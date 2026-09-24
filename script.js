@@ -226,11 +226,6 @@ const componentData = {
     },
 
 
-    /* =====================================================
-       FEEDER 5
-       PANEL SUPPORTING ENGINEER
-    ===================================================== */
-
     feeder5: {
         name: "PANEL SUPPORTING ENGINEER",
         type: "Sub Distribution Panel",
@@ -356,6 +351,12 @@ const detailDescription =
 const supportingPanelVisual =
     document.getElementById("supportingPanelVisual");
 
+const diagramWrapper =
+    document.getElementById("diagramWrapper");
+
+const supportingPanelView =
+    document.getElementById("supportingPanelView");
+
 
 /* =========================================================
    TAMPILKAN DETAIL
@@ -425,22 +426,23 @@ function showComponent(id) {
     detailDescription.textContent =
         data.description;
 
-
-    /* =====================================================
-       VISUAL PANEL SUPPORTING ENGINEER
-    ===================================================== */
+    /* Visual panel Supporting Engineer hanya tampil saat Feeder 5 dipilih */
+    const isSupportingPanel = id === "feeder5";
 
     if (supportingPanelVisual) {
+        supportingPanelVisual.hidden = !isSupportingPanel;
+    }
 
-        supportingPanelVisual.hidden =
-            id !== "feeder5";
+    if (diagramWrapper) {
+        diagramWrapper.classList.toggle("supporting-mode", isSupportingPanel);
+    }
 
+    if (supportingPanelView) {
+        supportingPanelView.hidden = !isSupportingPanel;
     }
 
 
-    /* =====================================================
-       HILANGKAN SELECTED
-    ===================================================== */
+    /* Hilangkan selected */
 
     document
         .querySelectorAll(".component")
@@ -451,9 +453,7 @@ function showComponent(id) {
         });
 
 
-    /* =====================================================
-       TANDAI KOMPONEN YANG DIPILIH
-    ===================================================== */
+    /* Tandai komponen yang dipilih */
 
     document
         .querySelectorAll(

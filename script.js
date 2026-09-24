@@ -1,269 +1,472 @@
-/**
- * ========================================================
- * SCRIPT.JS - LOGIKA INTERAKTIF PEMETAAN LISTRIK
- * ========================================================
- * Kode ini menggunakan JavaScript dasar (Vanilla JS) tanpa library luar.
- * Dibuat terstruktur dan diberi komentar agar mudah dipelajari oleh pemula.
- */
+/* =========================================================
+   DATA KOMPONEN
+========================================================= */
 
-// Menjalankan kode setelah seluruh dokumen HTML selesai dimuat oleh browser
-document.addEventListener("DOMContentLoaded", () => {
+const componentData = {
 
-  /* --------------------------------------------------------
-     1. DATA INFORMASI KOMPONEN KELISTRIKAN
-     --------------------------------------------------------
-     Objek ini menyimpan daftar informasi dari setiap komponen.
-     Key (kunci) pada objek ini harus sama persis dengan atribut
-     'data-id' yang ada di tag <g> pada file index.html.
-  */
-  const dataKomponen = {
-    "pln": {
-      nama: "PLN (Perusahaan Listrik Negara)",
-      jenis: "Sumber Listrik",
-      keterangan: "Sumber listrik utama dari jaringan utilitas publik untuk menyuplai kebutuhan daya kantor."
+    pln: {
+        name: "PLN",
+        type: "Sumber Utama (Utility)",
+
+        info: [
+            ["⚡", "Jenis", "PLN / Utility"],
+            ["⚡", "Fungsi", "Sumber listrik utama"],
+            ["⚡", "Tegangan", "380 / 220 V"],
+            ["●", "Status", "Aktif"],
+            ["⌂", "Lokasi", "Sumber eksternal"]
+        ],
+
+        description:
+            "PLN merupakan sumber utama listrik yang memasok energi listrik ke sistem distribusi gedung."
     },
-    "genset": {
-      nama: "Genset (Generator Set)",
-      jenis: "Sumber Listrik",
-      keterangan: "Sumber listrik cadangan (backup) yang beroperasi secara otomatis saat sumber utama PLN padam."
+
+
+    genset: {
+        name: "Genset",
+        type: "Sumber Cadangan (Backup)",
+
+        info: [
+            ["⚙", "Jenis", "Generator Set"],
+            ["⚡", "Fungsi", "Sumber listrik cadangan"],
+            ["⚡", "Tegangan", "380 / 220 V"],
+            ["●", "Status", "Standby"],
+            ["⌂", "Lokasi", "Ruang Genset"]
+        ],
+
+        description:
+            "Genset berfungsi sebagai sumber listrik cadangan ketika suplai PLN mengalami gangguan."
     },
-    "panel-input-ats": {
-      nama: "Panel Input ATS",
-      jenis: "Panel Masukan",
-      keterangan: "Panel penerima daya masukan yang menyalurkan listrik dari sumber PLN menuju switch pemindah (ATS)."
+
+
+    panel: {
+        name: "Panel Input ATS",
+        type: "Panel Masukan",
+
+        info: [
+            ["▣", "Jenis", "Panel Input"],
+            ["⚡", "Fungsi", "Menerima sumber PLN & Genset"],
+            ["⚡", "Tegangan", "380 / 220 V"],
+            ["●", "Status", "Aktif"],
+            ["⌂", "Lokasi", "Panel Input"]
+        ],
+
+        description:
+            "Panel Input ATS menjadi titik masuk dua sumber listrik sebelum diteruskan menuju ATS."
     },
-    "ats": {
-      nama: "ATS (Automatic Transfer Switch)",
-      jenis: "Proteksi & Pengalih",
-      keterangan: "Perangkat otomatis yang berpindah menghubungkan beban antara PLN dan Genset secara aman tanpa tumpang tindih."
+
+
+    ats: {
+        name: "ATS",
+        type: "Automatic Transfer Switch",
+
+        info: [
+            ["▣", "Jenis", "Automatic Transfer Switch"],
+            ["⚡", "Fungsi", "Transfer sumber otomatis"],
+            ["⚡", "Tegangan", "380 / 220 V"],
+            ["●", "Status", "Aktif"],
+            ["⌂", "Lokasi", "Panel ATS"]
+        ],
+
+        description:
+            "ATS berfungsi memindahkan sumber listrik secara otomatis antara PLN dan Genset ketika terjadi gangguan pada salah satu sumber."
     },
-    "mdb-01": {
-      nama: "MDB-01",
-      jenis: "Main Distribution Board",
-      fungsi: "Panel distribusi utama yang menerima suplai listrik dan membaginya ke 5 feeder/beban.",
-      sistem: "3 Phase",
-      komponenUtama: [
-        "MCCB Utama",
-        "MCB Kontrol/Auxiliary",
-        "Busbar 3 Fasa",
-        "5 Outgoing Feeder",
-        "Sistem Netral",
-        "Sistem Grounding"
-      ]
+
+
+    mccb: {
+        name: "MCCB UTAMA",
+        type: "Proteksi Utama (MCCB)",
+
+        info: [
+            ["▣", "Jenis", "MCCB"],
+            ["⚡", "Fungsi", "Proteksi utama"],
+            ["⚡", "Tegangan", "380 / 220 V"],
+            ["●", "Status", "Aktif"],
+            ["⌂", "Lokasi", "Panel Distribusi Utama"]
+        ],
+
+        description:
+            "MCCB utama digunakan sebagai pengaman dan pemutus utama sebelum daya listrik didistribusikan menuju seluruh feeder."
     },
-    "mccb-main": {
-      nama: "MCCB Utama",
-      jenis: "Proteksi Utama",
-      fungsi: "Proteksi utama MDB",
-      status: "Aktif"
+
+
+    mcb: {
+        name: "MCB KONTROL",
+        type: "Proteksi Kontrol (MCB)",
+
+        info: [
+            ["▤", "Jenis", "MCB"],
+            ["⚡", "Fungsi", "Proteksi rangkaian kontrol"],
+            ["⚡", "Tegangan", "220 V"],
+            ["●", "Status", "Aktif"],
+            ["⌂", "Lokasi", "Panel Distribusi Utama"]
+        ],
+
+        description:
+            "MCB kontrol digunakan untuk melindungi rangkaian kontrol dan peralatan pendukung pada panel distribusi."
     },
-    "mcb-aux": {
-      nama: "MCB Kontrol/Auxiliary",
-      jenis: "Proteksi Kontrol",
-      fungsi: "Sirkuit kontrol/auxiliary",
-      status: "Aktif"
+
+
+    neutral: {
+        name: "N — Neutral Bar",
+        type: "Neutral Bar",
+
+        info: [
+            ["N", "Jenis", "Neutral Bar"],
+            ["⚡", "Fungsi", "Penghantar netral"],
+            ["⚡", "Sistem", "3 Fasa + Neutral"],
+            ["●", "Status", "Terhubung"],
+            ["⌂", "Lokasi", "MDB"]
+        ],
+
+        description:
+            "Neutral bar merupakan titik penghimpunan dan distribusi penghantar netral pada panel distribusi utama."
     },
-    "rst-pembagian": {
-      nama: "Busbar 3 Fasa",
-      jenis: "Distribusi Daya",
-      sistem: "3 Phase",
-      fungsi: "Distribusi daya dari MCCB ke outgoing feeder"
+
+
+    pe: {
+        name: "PE — Protective Earth",
+        type: "Grounding / Protective Earth",
+
+        info: [
+            ["PE", "Jenis", "Protective Earth"],
+            ["⚡", "Fungsi", "Pengaman grounding"],
+            ["⚡", "Sistem", "Protective Earth"],
+            ["●", "Status", "Terhubung"],
+            ["⌂", "Lokasi", "MDB"]
+        ],
+
+        description:
+            "PE digunakan sebagai penghantar proteksi dan jalur grounding untuk keselamatan sistem kelistrikan."
     },
-    "feeder-1": {
-      nama: "FEEDER 1",
-      jenis: "Outgoing Feeder",
-      status: "Aktif",
-      sumber: "MDB-01",
-      tujuan: "Belum ditentukan",
-      beban: "Belum ditentukan"
+
+
+    busbar: {
+        name: "BUSBAR 3 FASA",
+        type: "Busbar Distribusi R-S-T",
+
+        info: [
+            ["R", "Fasa", "R"],
+            ["S", "Fasa", "S"],
+            ["T", "Fasa", "T"],
+            ["⚡", "Fungsi", "Distribusi daya"],
+            ["●", "Status", "Aktif"],
+            ["⌂", "Lokasi", "MDB"]
+        ],
+
+        description:
+            "Busbar 3 fasa merupakan penghantar utama yang membagi daya dari MCCB utama menuju masing-masing feeder."
     },
-    "feeder-2": {
-      nama: "FEEDER 2",
-      jenis: "Outgoing Feeder",
-      status: "Aktif",
-      sumber: "MDB-01",
-      tujuan: "Belum ditentukan",
-      beban: "Belum ditentukan"
+
+
+    feeder1: {
+        name: "FEEDER 1",
+        type: "Outgoing Feeder",
+
+        info: [
+            ["▤", "Proteksi", "MCCB / MCB"],
+            ["⚡", "Tegangan", "380 / 220 V"],
+            ["→", "Tujuan", "Beban 1"],
+            ["●", "Status", "Aktif"],
+            ["⌂", "Sumber", "MDB"]
+        ],
+
+        description:
+            "Feeder 1 merupakan jalur distribusi keluar dari MDB yang mengalirkan daya menuju Beban 1."
     },
-    "feeder-3": {
-      nama: "FEEDER 3",
-      jenis: "Outgoing Feeder",
-      status: "Aktif",
-      sumber: "MDB-01",
-      tujuan: "Belum ditentukan",
-      beban: "Belum ditentukan"
+
+
+    feeder2: {
+        name: "FEEDER 2",
+        type: "Outgoing Feeder",
+
+        info: [
+            ["▤", "Proteksi", "MCCB / MCB"],
+            ["⚡", "Tegangan", "380 / 220 V"],
+            ["→", "Tujuan", "Beban 2"],
+            ["●", "Status", "Aktif"],
+            ["⌂", "Sumber", "MDB"]
+        ],
+
+        description:
+            "Feeder 2 merupakan jalur distribusi keluar dari MDB yang mengalirkan daya menuju Beban 2."
     },
-    "feeder-4": {
-      nama: "FEEDER 4",
-      jenis: "Outgoing Feeder",
-      status: "Aktif",
-      sumber: "MDB-01",
-      tujuan: "Belum ditentukan",
-      beban: "Belum ditentukan"
+
+
+    feeder3: {
+        name: "FEEDER 3",
+        type: "Outgoing Feeder",
+
+        info: [
+            ["▤", "Proteksi", "MCCB / MCB"],
+            ["⚡", "Tegangan", "380 / 220 V"],
+            ["→", "Tujuan", "Beban 3"],
+            ["●", "Status", "Aktif"],
+            ["⌂", "Sumber", "MDB"]
+        ],
+
+        description:
+            "Feeder 3 merupakan jalur distribusi keluar dari MDB yang mengalirkan daya menuju Beban 3."
     },
-    "feeder-5": {
-      nama: "FEEDER 5",
-      jenis: "Outgoing Feeder",
-      status: "Aktif",
-      sumber: "MDB-01",
-      tujuan: "Belum ditentukan",
-      beban: "Belum ditentukan"
+
+
+    feeder4: {
+        name: "FEEDER 4",
+        type: "Outgoing Feeder",
+
+        info: [
+            ["▤", "Proteksi", "MCCB / MCB"],
+            ["⚡", "Tegangan", "380 / 220 V"],
+            ["→", "Tujuan", "Beban 4"],
+            ["●", "Status", "Aktif"],
+            ["⌂", "Sumber", "MDB"]
+        ],
+
+        description:
+            "Feeder 4 merupakan jalur distribusi keluar dari MDB yang mengalirkan daya menuju Beban 4."
+    },
+
+
+    feeder5: {
+        name: "FEEDER 5",
+        type: "Outgoing Feeder",
+
+        info: [
+            ["▤", "Proteksi", "MCCB / MCB"],
+            ["⚡", "Tegangan", "380 / 220 V"],
+            ["→", "Tujuan", "Beban 5"],
+            ["●", "Status", "Aktif"],
+            ["⌂", "Sumber", "MDB"]
+        ],
+
+        description:
+            "Feeder 5 merupakan jalur distribusi keluar dari MDB yang mengalirkan daya menuju Beban 5."
+    },
+
+
+    load1: {
+        name: "BEBAN 1",
+        type: "Outgoing Feeder",
+
+        info: [
+            ["▣", "Jenis", "Beban Listrik"],
+            ["⚡", "Tegangan", "380 / 220 V"],
+            ["←", "Feeder", "Feeder 1"],
+            ["●", "Status", "Terhubung"],
+            ["⌂", "Sumber", "MDB"]
+        ],
+
+        description:
+            "Beban 1 merupakan titik tujuan akhir dari jalur distribusi Feeder 1."
+    },
+
+
+    load2: {
+        name: "BEBAN 2",
+        type: "Outgoing Feeder",
+
+        info: [
+            ["▣", "Jenis", "Beban Listrik"],
+            ["⚡", "Tegangan", "380 / 220 V"],
+            ["←", "Feeder", "Feeder 2"],
+            ["●", "Status", "Terhubung"],
+            ["⌂", "Sumber", "MDB"]
+        ],
+
+        description:
+            "Beban 2 merupakan titik tujuan akhir dari jalur distribusi Feeder 2."
+    },
+
+
+    load3: {
+        name: "BEBAN 3",
+        type: "Outgoing Feeder",
+
+        info: [
+            ["▣", "Jenis", "Beban Listrik"],
+            ["⚡", "Tegangan", "380 / 220 V"],
+            ["←", "Feeder", "Feeder 3"],
+            ["●", "Status", "Terhubung"],
+            ["⌂", "Sumber", "MDB"]
+        ],
+
+        description:
+            "Beban 3 merupakan titik tujuan akhir dari jalur distribusi Feeder 3."
+    },
+
+
+    load4: {
+        name: "BEBAN 4",
+        type: "Outgoing Feeder",
+
+        info: [
+            ["▣", "Jenis", "Beban Listrik"],
+            ["⚡", "Tegangan", "380 / 220 V"],
+            ["←", "Feeder", "Feeder 4"],
+            ["●", "Status", "Terhubung"],
+            ["⌂", "Sumber", "MDB"]
+        ],
+
+        description:
+            "Beban 4 merupakan titik tujuan akhir dari jalur distribusi Feeder 4."
+    },
+
+
+    load5: {
+        name: "BEBAN 5",
+        type: "Outgoing Feeder",
+
+        info: [
+            ["▣", "Jenis", "Beban Listrik"],
+            ["⚡", "Tegangan", "380 / 220 V"],
+            ["←", "Feeder", "Feeder 5"],
+            ["●", "Status", "Terhubung"],
+            ["⌂", "Sumber", "MDB"]
+        ],
+
+        description:
+            "Beban 5 merupakan titik tujuan akhir dari jalur distribusi Feeder 5."
     }
-  };
 
-  // Kompatibilitas jika panel-output masih dipanggil
-  dataKomponen["panel-output"] = dataKomponen["mdb-01"];
+};
 
-  /* --------------------------------------------------------
-     2. MENGAMBIL ELEMEN HTML (DOM SELECTION)
-     --------------------------------------------------------
-     Kita mengambil elemen-elemen dari halaman agar bisa diubah
-     secara dinamis menggunakan JavaScript.
-  */
-  // Mengambil semua kotak komponen di dalam SVG (memiliki class 'node')
-  const nodeElements = document.querySelectorAll(".node");
 
-  // Mengambil elemen panel informasi di sidebar
-  const emptyState = document.getElementById("empty-state");
-  const detailBox = document.getElementById("detail-box");
-  const compName = document.getElementById("comp-name");
-  const compType = document.getElementById("comp-type");
-  const compExtraDetails = document.getElementById("comp-extra-details");
-  const compDescContainer = document.getElementById("comp-desc-container");
-  const compDescLabel = document.getElementById("comp-desc-label");
-  const compDesc = document.getElementById("comp-desc");
+/* =========================================================
+   ELEMENT HTML
+========================================================= */
 
-  /* --------------------------------------------------------
-     3. FUNGSI UNTUK MENAMPILKAN INFORMASI KOMPONEN
-     --------------------------------------------------------
-     Fungsi ini dipanggil saat salah satu komponen diklik.
-  */
-  function tampilkanDetail(idKomponen, elemenTerpilih) {
-    // Cari data komponen berdasarkan id
-    const data = dataKomponen[idKomponen];
+const detailName =
+    document.getElementById("detailName");
 
-    if (!data) {
-      console.warn("Data komponen tidak ditemukan untuk ID:", idKomponen);
-      return;
-    }
+const detailType =
+    document.getElementById("detailType");
 
-    // 1. Perbarui nama dan jenis pada panel informasi di sebelah kanan
-    compName.textContent = data.nama;
-    compType.textContent = data.jenis;
+const detailInfo =
+    document.getElementById("detailInfo");
 
-    // 2. Bersihkan atribut detail tambahan sebelumnya
-    if (compExtraDetails) {
-      compExtraDetails.innerHTML = "";
+const detailDescription =
+    document.getElementById("detailDescription");
 
-      // Render atribut spesifikasi (Sistem, Status, Sumber, Tujuan, Beban) jika tersedia
-      const specItems = [];
-      if (data.sistem) {
-        specItems.push({ label: "Sistem", val: `<span class="badge-system">${data.sistem}</span>` });
-      }
-      if (data.status) {
-        specItems.push({ label: "Status", val: `<span class="badge-status-active">${data.status}</span>` });
-      }
-      if (data.sumber) {
-        specItems.push({ label: "Sumber", val: data.sumber });
-      }
-      if (data.tujuan) {
-        specItems.push({ label: "Tujuan", val: data.tujuan });
-      }
-      if (data.beban) {
-        specItems.push({ label: "Beban", val: data.beban });
-      }
 
-      if (specItems.length > 0) {
-        const specGrid = document.createElement("div");
-        specGrid.className = "info-spec-grid";
-        specItems.forEach(item => {
-          const row = document.createElement("div");
-          row.className = "info-spec-item";
-          row.innerHTML = `
-            <span class="info-spec-label">${item.label}</span>
-            <span class="info-spec-val">${item.val}</span>
-          `;
-          specGrid.appendChild(row);
-        });
-        compExtraDetails.appendChild(specGrid);
-      }
+/* =========================================================
+   TAMPILKAN DETAIL
+========================================================= */
 
-      // Render daftar Komponen Utama (untuk MDB-01) jika tersedia
-      if (data.komponenUtama && Array.isArray(data.komponenUtama)) {
-        const listSection = document.createElement("div");
-        listSection.className = "info-row";
-        listSection.innerHTML = `
-          <span class="info-label">Komponen Utama</span>
-          <ul class="comp-list">
-            ${data.komponenUtama.map(item => `
-              <li class="comp-list-item">
-                <span class="comp-list-bullet">&#9679;</span>
-                <span>${item}</span>
-              </li>
-            `).join("")}
-          </ul>
+function showComponent(id) {
+
+    const data = componentData[id];
+
+    if (!data) return;
+
+
+    /* Nama */
+
+    detailName.textContent =
+        data.name;
+
+
+    /* Jenis */
+
+    detailType.textContent =
+        data.type;
+
+
+    /* Informasi */
+
+    detailInfo.innerHTML = "";
+
+
+    data.info.forEach(row => {
+
+        const div =
+            document.createElement("div");
+
+        div.className =
+            "detail-row";
+
+
+        div.innerHTML = `
+
+            <span class="detail-row-icon">
+                ${row[0]}
+            </span>
+
+            <span class="detail-row-key">
+                ${row[1]}
+            </span>
+
+            <span class="detail-row-colon">
+                :
+            </span>
+
+            <span class="detail-row-value">
+                ${row[2]}
+            </span>
+
         `;
-        compExtraDetails.appendChild(listSection);
-      }
-    }
 
-    // 3. Tampilkan Fungsi atau Keterangan Singkat
-    if (compDescContainer && compDesc) {
-      if (data.fungsi) {
-        compDescContainer.classList.remove("hidden");
-        if (compDescLabel) compDescLabel.textContent = "Fungsi";
-        compDesc.textContent = data.fungsi;
-      } else if (data.keterangan) {
-        compDescContainer.classList.remove("hidden");
-        if (compDescLabel) compDescLabel.textContent = "Keterangan Singkat";
-        compDesc.textContent = data.keterangan;
-      } else {
-        compDescContainer.classList.add("hidden");
-      }
-    }
 
-    // 4. Sembunyikan pesan awal 'empty state' dan tampilkan detail informasi
-    emptyState.classList.add("hidden");
-    detailBox.classList.remove("hidden");
+        detailInfo.appendChild(div);
 
-    // 5. Atur tanda aktif visual pada diagram SVG
-    // Hapus kelas 'active' dari semua komponen terlebih dahulu
-    const allNodes = document.querySelectorAll(".node");
-    allNodes.forEach(node => {
-      node.classList.remove("active");
     });
 
-    // Berikan kelas 'active' pada komponen yang memiliki data-id yang cocok
-    const matchingNodes = document.querySelectorAll(`.node[data-id="${idKomponen}"]`);
-    if (matchingNodes.length > 0) {
-      matchingNodes.forEach(node => node.classList.add("active"));
-    } else if (elemenTerpilih) {
-      elemenTerpilih.classList.add("active");
-    }
-  }
 
-  /* --------------------------------------------------------
-     4. MENAMBAHKAN EVENT LISTENER (INTERAKSI KLIK)
-     --------------------------------------------------------
-     Kita melakukan perulangan (loop) ke semua elemen komponen SVG.
-     Setiap komponen diberi perintah: 'Jika diklik, jalankan fungsi tampilkanDetail'.
-  */
-  const clickableNodes = document.querySelectorAll(".node");
-  clickableNodes.forEach(node => {
-    // Event ketika mouse mengklik elemen komponen
-    node.addEventListener("click", () => {
-      const idKomponen = node.getAttribute("data-id");
-      tampilkanDetail(idKomponen, node);
+    /* Deskripsi */
+
+    detailDescription.textContent =
+        data.description;
+
+
+    /* Hilangkan selected */
+
+    document
+        .querySelectorAll(".component")
+        .forEach(el => {
+
+            el.classList.remove("selected");
+
+        });
+
+
+    /* Tandai komponen yang dipilih */
+
+    document
+        .querySelectorAll(
+            `[data-component="${id}"]`
+        )
+        .forEach(el => {
+
+            el.classList.add("selected");
+
+        });
+
+}
+
+
+/* =========================================================
+   CLICK SEMUA KOMPONEN
+========================================================= */
+
+document
+    .querySelectorAll(".component")
+    .forEach(component => {
+
+        component.addEventListener(
+            "click",
+            function () {
+
+                const id =
+                    this.dataset.component;
+
+                showComponent(id);
+
+            }
+        );
+
     });
 
-    // Menambahkan aksesibilitas keyboard (tombol Enter atau Spasi)
-    node.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        const idKomponen = node.getAttribute("data-id");
-        tampilkanDetail(idKomponen, node);
-      }
-    });
-  });
 
-});
+/* =========================================================
+   DEFAULT
+========================================================= */
+
+showComponent("mccb");

@@ -226,20 +226,27 @@ const componentData = {
     },
 
 
+    /* =====================================================
+       FEEDER 5
+       PANEL SUPPORTING ENGINEER
+    ===================================================== */
+
     feeder5: {
-        name: "FEEDER 5",
-        type: "Outgoing Feeder",
+        name: "PANEL SUPPORTING ENGINEER",
+        type: "Sub Distribution Panel",
 
         info: [
-            ["▤", "Proteksi", "MCCB / MCB"],
+            ["▤", "Sumber", "Feeder 5 dari MDB"],
             ["⚡", "Tegangan", "380 / 220 V"],
-            ["→", "Tujuan", "Beban 5"],
-            ["●", "Status", "Aktif"],
-            ["⌂", "Sumber", "MDB"]
+            ["▣", "Proteksi Utama", "MCCB 25 A"],
+            ["▤", "Proteksi Cabang", "MCB C2, C6, C10, C16, C25"],
+            ["⌁", "Jumlah Sirkuit", "8 outgoing"],
+            ["●", "Status", "Normal / Aktif"],
+            ["⌂", "Lokasi", "Ruang Supporting Engineer"]
         ],
 
         description:
-            "Feeder 5 merupakan jalur distribusi keluar dari MDB yang mengalirkan daya menuju Beban 5."
+            "Panel distribusi yang menerima suplai dari Feeder 5 MDB dan membagi daya ke beberapa sirkuit di ruang Supporting Engineer."
     },
 
 
@@ -346,6 +353,9 @@ const detailInfo =
 const detailDescription =
     document.getElementById("detailDescription");
 
+const supportingPanelVisual =
+    document.getElementById("supportingPanelVisual");
+
 
 /* =========================================================
    TAMPILKAN DETAIL
@@ -416,7 +426,21 @@ function showComponent(id) {
         data.description;
 
 
-    /* Hilangkan selected */
+    /* =====================================================
+       VISUAL PANEL SUPPORTING ENGINEER
+    ===================================================== */
+
+    if (supportingPanelVisual) {
+
+        supportingPanelVisual.hidden =
+            id !== "feeder5";
+
+    }
+
+
+    /* =====================================================
+       HILANGKAN SELECTED
+    ===================================================== */
 
     document
         .querySelectorAll(".component")
@@ -427,7 +451,9 @@ function showComponent(id) {
         });
 
 
-    /* Tandai komponen yang dipilih */
+    /* =====================================================
+       TANDAI KOMPONEN YANG DIPILIH
+    ===================================================== */
 
     document
         .querySelectorAll(

@@ -9,7 +9,7 @@ const feeders = [
     { id: 'f2', name: 'Feeder 2', mcb: 'MCCB 3P 40A', load: 'Beban 2' },
     { id: 'f3', name: 'Feeder 3', mcb: 'MCCB 3P 40A', load: 'Beban 3' },
     { id: 'f4', name: 'Feeder 4', mcb: 'MCCB 3P 40A', load: 'Beban 4' },
-    { id: 'f5', name: 'Feeder 5', mcb: 'MCCB 3P 40A', load: 'Beban 5' },
+    { id: 'f5', name: 'Feeder 5', mcb: 'MCCB 3P 40A', load: 'Beban 5', noLine: true },
     { id: 'f6', name: 'Feeder 6', mcb: 'MCCB 3P 25A', load: 'Panel Ruang Peralatan & Teknisi', drill: 'sub' },
 ];
 
@@ -217,7 +217,7 @@ function buildMain() {
     const loadIds = feeders.map(f => {
         const id = 'ld_' + f.id;
         nodes[id] = { t: f.load, s: 'dari ' + f.name, c: 'sm', drill: f.drill };
-        E.push({ from: 'mdb', to: id, type: 'power' });
+        if (!f.noLine) E.push({ from: 'mdb', to: id, type: 'power' });
         return id;
     });
     return { nodes, E, rows: [['pln', 'gen'], ['input'], ['ats', 'amf'], ['mdb'], loadIds] };
@@ -244,7 +244,7 @@ function buildMDB() {
         E.push({ from: 'mccb', to: 'bus', type: 'power', col: c, sdx: (i - 1) * SPACING, edx: (i - 1) * SPACING }));
     const fIds = feeders.map(f => {
         nodes[f.id] = { t: f.name, s: f.mcb + ' → ' + f.load, c: 'sm', drill: f.drill, info: f.drill ? undefined : 'mdbfeed' };
-        ['r', 's', 't'].forEach((c, i) =>
+        if (!f.noLine) ['r', 's', 't'].forEach((c, i) =>
             E.push({ from: 'bus', to: f.id, type: 'power', col: c, align: true, sdx: (i - 1) * SPACING, edx: (i - 1) * SPACING }));
         return f.id;
     });
@@ -314,12 +314,22 @@ const LEVELS = { main: buildMain, mdb: buildMDB, sub: buildSub, ats: buildATS };
 const TITLES = { main: 'Utama', mdb: 'Utama › MDB', sub: 'Utama › MDB › Panel Turunan', ats: 'Utama › ATS' };
 const PARENT = { mdb: 'main', sub: 'mdb', ats: 'main' };
 
+/* ===== Gaya garis sederhana: tanpa panah, jalur terpilih mengalir halus ===== */
+(function () {
+    const st = document.createElement('style');
+    st.textContent =
+        '#wires .e{marker-end:none}' +
+        '#wires .e.hl{stroke-dasharray:7 6;animation:aliran .8s linear infinite}' +
+        '@keyframes aliran{to{stroke-dashoffset:-13}}';
+    document.head.appendChild(st);
+})();
+
 /* ================= STATE ================= */
 const $ = s => document.querySelector(s);
 const svg = $('#wires'), viewEl = $('#view'), cv = $('#canvas');
 let cur = null, curName = 'main', sel = null;
 
-const DEFS = '<defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="context-stroke"/></marker></defs>';
+const DEFS = '<defs></defs>'; // garis polos, tanpa panah
 
 function render(name) {
     curName = name; sel = null;
@@ -388,9 +398,16 @@ function draw() {
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         path.setAttribute('d', roundedPath(p));
         path.setAttribute('class', 'e ' + e.type + (e.standby ? ' standby' : '') + (e.col ? ' col-' + e.col : ''));
-        path.setAttribute('marker-end', 'url(#ar)');
+        path.setAttribute('stroke-linecap', 'round');
+        path.setAttribute('stroke-linejoin', 'round');
         svg.appendChild(path);
         e.el = path;
+        // titik kecil di ujung garis (penanda sambungan ke komponen tujuan)
+        const end = p[p.length - 1];
+        const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        dot.setAttribute('cx', end[0]); dot.setAttribute('cy', end[1]); dot.setAttribute('r', 3);
+        svg.appendChild(dot);
+        e.dot = dot;
         if (e.label) {
             const pt = path.getPointAtLength(path.getTotalLength() / 2);
             const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
@@ -435,6 +452,11 @@ function paint() {
         e.el.classList.toggle('hl', !!on);
         e.el.classList.toggle('dim', !!t && !on);
         if (e.txt) e.txt.classList.toggle('dim', !!t && !on);
+        if (e.dot) {
+            const cs = getComputedStyle(e.el);
+            e.dot.setAttribute('fill', cs.stroke);
+            e.dot.setAttribute('opacity', cs.opacity);
+        }
     });
 }
 

@@ -257,7 +257,7 @@ function buildMDB() {
         src: { t: 'Dari ATS', s: 'Sumber: MDB', c: 'sm' },
         mccb: { t: 'MCCB Utama', s: '3P', info: 'mdbmccb' },
         mcb: { t: 'MCB Kontrol', s: 'Sumber: MDB', c: 'sm', info: 'mdbmcb' },
-        bus: { t: 'Busbar R-S-T', s: '', c: 'busb', bus: true, info: 'mdbbus' },
+        bus: { t: 'Busbar R-S-T', s: 'Rel tembaga R · S · T', c: 'busb', info: 'mdbbus' },
         n: { t: 'Neutral (N)', s: '', c: 'bar', info: 'mdbn' },
         ukur: { t: 'Alat Ukur Pintu', s: '3 ampere meter · 3 lampu · 2 selector', c: 'ctl', info: 'mdbukur' },
         ct: { t: 'CT 3 buah', s: 'Satu per fasa di busbar', c: 'ctl', info: 'mdbbus' },
@@ -266,15 +266,13 @@ function buildMDB() {
     const E = [
         { from: 'src', to: 'mccb', type: 'power' },
         { from: 'mccb', to: 'mcb', type: 'power' },
-        { from: 'mcb', to: 'ukur', type: 'control', label: 'Suplai tegangan' },
-        { from: 'ct', to: 'ukur', type: 'control', label: 'Sinyal arus' },
+        { from: 'mcb', to: 'ukur', type: 'control' },
+        { from: 'ct', to: 'ukur', type: 'control' },
     ];
-    ['r', 's', 't'].forEach((c, i) =>
-        E.push({ from: 'mccb', to: 'bus', type: 'power', col: c, sdx: (i - 1) * SPACING, edx: (i - 1) * SPACING }));
+    E.push({ from: 'mccb', to: 'bus', type: 'power' });
     const fIds = feeders.map(f => {
         nodes[f.id] = { t: f.name, s: f.mcb + ' → ' + f.load, c: 'sm', drill: f.drill, info: f.drill ? undefined : 'mdbfeed' };
-        if (!f.noLine) ['r', 's', 't'].forEach((c, i) =>
-            E.push({ from: 'bus', to: f.id, type: 'power', col: c, align: true, sdx: (i - 1) * SPACING, edx: (i - 1) * SPACING }));
+        if (!f.noLine) E.push({ from: 'bus', to: f.id, type: 'power', align: true });
         return f.id;
     });
     return { nodes, E, rows: [['src'], ['mccb', 'mcb', 'ukur', 'ct'], ['bus'], fIds, ['n', 'pe']] };
@@ -342,7 +340,7 @@ const LEVELS = { main: buildMain, mdb: buildMDB, sub: buildSub, ats: buildATS };
 const TITLES = { main: 'Utama', mdb: 'Utama › MDB', sub: 'Utama › MDB › Panel Turunan', ats: 'Utama › ATS' };
 const PARENT = { mdb: 'main', sub: 'mdb', ats: 'main' };
 
-/* ===== Garis polos: HANYA untuk level panel turunan (kelas .plain) ===== */
+/* ===== Garis polos: level MDB dan panel turunan (kelas .plain) ===== */
 (function () {
     const st = document.createElement('style');
     st.textContent =
@@ -426,7 +424,7 @@ function draw() {
         }
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         path.setAttribute('d', roundedPath(p));
-        const plain = curName === 'sub';
+        const plain = curName === 'sub' || curName === 'mdb';
         path.setAttribute('class', 'e ' + e.type + (e.standby ? ' standby' : '') +
             (plain ? ' plain' : (e.col ? ' col-' + e.col : '')));
         if (!plain) path.setAttribute('marker-end', 'url(#ar)');

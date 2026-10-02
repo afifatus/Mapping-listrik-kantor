@@ -340,13 +340,15 @@ const LEVELS = { main: buildMain, mdb: buildMDB, sub: buildSub, ats: buildATS };
 const TITLES = { main: 'Utama', mdb: 'Utama › MDB', sub: 'Utama › MDB › Panel Turunan', ats: 'Utama › ATS' };
 const PARENT = { mdb: 'main', sub: 'mdb', ats: 'main' };
 
-/* ===== Gaya garis sederhana: tanpa panah, jalur terpilih mengalir halus ===== */
+/* ===== Gaya garis sederhana: polos, satu warna, tanpa panah; jalur terpilih lebih tebal ===== */
 (function () {
     const st = document.createElement('style');
     st.textContent =
-        '#wires .e{marker-end:none}' +
-        '#wires .e.hl{stroke-dasharray:7 6;animation:aliran .8s linear infinite}' +
-        '@keyframes aliran{to{stroke-dashoffset:-13}}';
+        '#wires .e, #wires .e.power, #wires .e.control, #wires .e.standby{' +
+        'stroke:#64748b !important;stroke-width:2 !important;stroke-dasharray:none !important;' +
+        'marker-end:none !important;marker-start:none !important;animation:none !important;fill:none}' +
+        '#wires .e.hl{stroke:#2563eb !important;stroke-width:3.5 !important}' +
+        '#wires .e.dim{opacity:.2}';
     document.head.appendChild(st);
 })();
 

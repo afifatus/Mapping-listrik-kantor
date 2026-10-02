@@ -49,11 +49,12 @@ const INFO = {
         spek: [
             ['Suplai', 'MDB Feeder 6'],
             ['Proteksi utama', 'MCCB EasyPact EZC100 25A 3P'],
-            ['MCB', '8 buah, 1 kutub (Broco, Schneider Domae, Merlin Gerin)'],
+            ['MCB', '8 buah 1P berderet: 2 Broco (C2, C10), 4 Schneider Domae (C10, C16, C25, C25), 1 Merlin Gerin C25, 1 Multi9 NC45a C6'],
             ['Pintu', '3 lampu indikator + 1 selector switch'],
-            ['Keluaran', 'Terminal block dengan jumper merah, menuju beban ruangan'],
+            ['Sambungan MCCB ke MCB', 'Kabel hitam dilakban menuju terminal atas MCB (tidak ada busbar)'],
+            ['Keluaran', 'Terminal block sekitar 11 jalur, dua baris, dengan jumper kabel merah; kabel biru (netral) ke bawah'],
         ],
-        catatan: 'Pembagian fasa (R/S/T) tiap MCB dan nama beban masih sementara. Sesuaikan di script.js (subMcbs).',
+        catatan: 'Dibaca dari foto. Fasa tiap MCB tidak ditampilkan karena tidak terlihat di foto. Nama beban masih sementara, sesuaikan di script.js (subMcbs).',
         foto: ['img/panel-pintu.jpg', 'img/panel-mccb.jpg', 'img/panel-mcb.jpg'],
     },
     mccb: {
@@ -195,6 +196,34 @@ Object.assign(INFO, {
     ]),
 });
 
+
+// ----- Panel turunan (Ruang Peralatan & Teknisi): detail 8 MCB dari foto -----
+Object.assign(INFO, {
+    subkabel: I('Sambungan MCCB ke MCB', [
+        ['Bentuk', 'Kabel hitam dikelompokkan dan dilakban hitam, keluar dari 3 terminal bawah MCCB'],
+        ['Tujuan', 'Terminal atas 8 MCB 1P, disambung dengan jumper kabel'],
+        ['Kabel lain', 'Kabel coklat/pink dan hitam melintas di sisi kanan; kabel biru tampak ke terminal atas MCB Broco'],
+        ['Busbar', 'Tidak ada busbar pada panel ini'],
+    ], 'Dibaca dari foto. Kabel biru biasanya netral, tapi tampak di sisi atas MCB Broco. Mohon cek di lapangan.'),
+});
+[
+    ['Broco C2', ['Merek / tipe', 'Broco C2, 1P'], '230 V~, 4500 A, IEC 60898, SNI, kode LMK 17302C', 'Merah'],
+    ['Broco C10', ['Merek / tipe', 'Broco C10, 1P'], '230 V~, 4500 A, IEC 60898, SNI, kode LMK 17310C', 'Merah'],
+    ['Schneider Domae C10', ['Merek / tipe', 'Schneider Electric Domae C10, 1P'], '230 V~, 4500 A, kelas 3, kode 11341SNI', 'Oranye'],
+    ['Merlin Gerin C25', ['Merek / tipe', 'Merlin Gerin C25 (seri Domae DOM11344SNI), 1P'], '230 V~, 4500 A, IEC 898, kode produksi N0751', 'Oranye'],
+    ['Schneider Domae C16', ['Merek / tipe', 'Schneider Electric Domae C16, 1P'], '230 V~, 4500 A, kelas 3, kode 11342SNI', 'Oranye'],
+    ['Schneider Domae C25', ['Merek / tipe', 'Schneider Electric Domae C25, 1P'], '230 V~, 4500 A, kelas 3, kode 11344SNI', 'Oranye'],
+    ['Multi9 NC45a C6', ['Merek / tipe', 'Merlin Gerin Multi9 NC45a C6, 1P'], '230/400 V~, 4500 A (kelas 3), 12000 tertera di bodi, SNI, tertulis SPLN 108 dan IEC 898 (terbaca samar)', 'Hitam, bertanda I-ON'],
+    ['Schneider Domae C25', ['Merek / tipe', 'Schneider Electric Domae C25, 1P'], '230 V~, 4500 A, kelas 3, kode 1134xSNI (terbaca samar)', 'Oranye'],
+].forEach((d, i) => {
+    INFO['sm' + (i + 1)] = I('MCB ' + (i + 1) + ' · ' + d[0], [
+        d[1],
+        ['Posisi', 'Urutan ke-' + (i + 1) + ' dari kiri'],
+        ['Data tertera', d[2]],
+        ['Tuas', d[3]],
+    ]);
+});
+
 /* ================= BUILD LEVEL ================= */
 function buildMain() {
     const nodes = {
@@ -240,12 +269,10 @@ function buildMDB() {
         { from: 'mcb', to: 'ukur', type: 'control', label: 'Suplai tegangan' },
         { from: 'ct', to: 'ukur', type: 'control', label: 'Sinyal arus' },
     ];
-    ['r', 's', 't'].forEach((c, i) =>
-        E.push({ from: 'mccb', to: 'bus', type: 'power', col: c, sdx: (i - 1) * SPACING, edx: (i - 1) * SPACING }));
+    E.push({ from: 'mccb', to: 'bus', type: 'power' });
     const fIds = feeders.map(f => {
         nodes[f.id] = { t: f.name, s: f.mcb + ' → ' + f.load, c: 'sm', drill: f.drill, info: f.drill ? undefined : 'mdbfeed' };
-        if (!f.noLine) ['r', 's', 't'].forEach((c, i) =>
-            E.push({ from: 'bus', to: f.id, type: 'power', col: c, align: true, sdx: (i - 1) * SPACING, edx: (i - 1) * SPACING }));
+        if (!f.noLine) E.push({ from: 'bus', to: f.id, type: 'power', align: true });
         return f.id;
     });
     return { nodes, E, rows: [['src'], ['mccb', 'mcb', 'ukur', 'ct'], ['bus'], fIds, ['n', 'pe']] };
@@ -255,20 +282,19 @@ function buildSub() {
     const nodes = {
         src: { t: 'Panel Ruang Peralatan & Teknisi', s: 'Dari MDB · Feeder 6', c: 'sm', info: 'sub' },
         mccb: { t: 'MCCB Utama', s: 'EasyPact EZC100 · 25A 3P', info: 'mccb' },
-        bus: { t: 'Busbar R-S-T', s: '', c: 'busb', bus: true },
+        bus: { t: 'Sambungan Kabel', s: 'Keluaran MCCB, kabel dilakban, ke 8 MCB', c: 'busb', info: 'subkabel' },
     };
     const E = [
         { from: 'src', to: 'mccb', type: 'power' },
+        { from: 'mccb', to: 'bus', type: 'power' },
     ];
-    ['r', 's', 't'].forEach((c, i) =>
-        E.push({ from: 'mccb', to: 'bus', type: 'power', col: c, sdx: (i - 1) * SPACING, edx: (i - 1) * SPACING }));
     const mIds = [], lIds = [];
     subMcbs.forEach((m, i) => {
         const mid = 'm' + (i + 1), lid = 'l' + (i + 1);
-        nodes[mid] = { t: m.brand + ' ' + m.rate, s: '1P · fasa ' + m.f.toUpperCase(), c: 'sm ph-' + m.f };
-        nodes[lid] = { t: m.load, s: 'dari MCB ' + (i + 1), c: 'sm ph-' + m.f, info: m.info };
-        E.push({ from: 'bus', to: mid, type: 'power', col: m.f, align: true });
-        E.push({ from: mid, to: lid, type: 'power', col: m.f });
+        nodes[mid] = { t: m.brand + ' ' + m.rate, s: '1P · MCB ' + (i + 1), c: 'sm', info: 'sm' + (i + 1) };
+        nodes[lid] = { t: m.load, s: 'dari MCB ' + (i + 1), c: 'sm', info: m.info };
+        E.push({ from: 'bus', to: mid, type: 'power', align: true });
+        E.push({ from: mid, to: lid, type: 'power' });
         mIds.push(mid); lIds.push(lid);
     });
     return { nodes, E, rows: [['src'], ['mccb'], ['bus'], mIds, lIds] };
@@ -397,7 +423,7 @@ function draw() {
         }
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         path.setAttribute('d', roundedPath(p));
-        path.setAttribute('class', 'e ' + e.type + (e.standby ? ' standby' : '') + (e.col ? ' col-' + e.col : ''));
+        path.setAttribute('class', 'e ' + e.type + (e.standby ? ' standby' : ''));
         path.setAttribute('stroke-linecap', 'round');
         path.setAttribute('stroke-linejoin', 'round');
         svg.appendChild(path);

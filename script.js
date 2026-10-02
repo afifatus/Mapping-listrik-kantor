@@ -269,10 +269,12 @@ function buildMDB() {
         { from: 'mcb', to: 'ukur', type: 'control', label: 'Suplai tegangan' },
         { from: 'ct', to: 'ukur', type: 'control', label: 'Sinyal arus' },
     ];
-    E.push({ from: 'mccb', to: 'bus', type: 'power' });
+    ['r', 's', 't'].forEach((c, i) =>
+        E.push({ from: 'mccb', to: 'bus', type: 'power', col: c, sdx: (i - 1) * SPACING, edx: (i - 1) * SPACING }));
     const fIds = feeders.map(f => {
         nodes[f.id] = { t: f.name, s: f.mcb + ' → ' + f.load, c: 'sm', drill: f.drill, info: f.drill ? undefined : 'mdbfeed' };
-        if (!f.noLine) E.push({ from: 'bus', to: f.id, type: 'power', align: true });
+        if (!f.noLine) ['r', 's', 't'].forEach((c, i) =>
+            E.push({ from: 'bus', to: f.id, type: 'power', col: c, align: true, sdx: (i - 1) * SPACING, edx: (i - 1) * SPACING }));
         return f.id;
     });
     return { nodes, E, rows: [['src'], ['mccb', 'mcb', 'ukur', 'ct'], ['bus'], fIds, ['n', 'pe']] };
@@ -340,15 +342,14 @@ const LEVELS = { main: buildMain, mdb: buildMDB, sub: buildSub, ats: buildATS };
 const TITLES = { main: 'Utama', mdb: 'Utama › MDB', sub: 'Utama › MDB › Panel Turunan', ats: 'Utama › ATS' };
 const PARENT = { mdb: 'main', sub: 'mdb', ats: 'main' };
 
-/* ===== Gaya garis sederhana: polos, satu warna, tanpa panah; jalur terpilih lebih tebal ===== */
+/* ===== Garis polos: HANYA untuk level panel turunan (kelas .plain) ===== */
 (function () {
     const st = document.createElement('style');
     st.textContent =
-        '#wires .e, #wires .e.power, #wires .e.control, #wires .e.standby{' +
-        'stroke:#64748b !important;stroke-width:2 !important;stroke-dasharray:none !important;' +
-        'marker-end:none !important;marker-start:none !important;animation:none !important;fill:none}' +
-        '#wires .e.hl{stroke:#2563eb !important;stroke-width:3.5 !important}' +
-        '#wires .e.dim{opacity:.2}';
+        '#wires .e.plain{stroke:#64748b !important;stroke-width:2 !important;stroke-dasharray:none !important;' +
+        'marker-end:none !important;animation:none !important;fill:none}' +
+        '#wires .e.plain.hl{stroke:#2563eb !important;stroke-width:3.5 !important}' +
+        '#wires .e.plain.dim{opacity:.2}';
     document.head.appendChild(st);
 })();
 
@@ -357,7 +358,7 @@ const $ = s => document.querySelector(s);
 const svg = $('#wires'), viewEl = $('#view'), cv = $('#canvas');
 let cur = null, curName = 'main', sel = null;
 
-const DEFS = '<defs></defs>'; // garis polos, tanpa panah
+const DEFS = '<defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="context-stroke"/></marker></defs>';
 
 function render(name) {
     curName = name; sel = null;
@@ -425,9 +426,10 @@ function draw() {
         }
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         path.setAttribute('d', roundedPath(p));
-        path.setAttribute('class', 'e ' + e.type + (e.standby ? ' standby' : ''));
-        path.setAttribute('stroke-linecap', 'round');
-        path.setAttribute('stroke-linejoin', 'round');
+        const plain = curName === 'sub';
+        path.setAttribute('class', 'e ' + e.type + (e.standby ? ' standby' : '') +
+            (plain ? ' plain' : (e.col ? ' col-' + e.col : '')));
+        if (!plain) path.setAttribute('marker-end', 'url(#ar)');
         svg.appendChild(path);
         e.el = path;
         // titik kecil di ujung garis (penanda sambungan ke komponen tujuan)
